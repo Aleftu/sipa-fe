@@ -31,17 +31,6 @@ const HeroSection: React.FC = () => {
             <Button variant="primary">Buat Pengaduan</Button>
             <Button variant="secondary">Pelajari Lebih Lanjut</Button>
           </div>
-          
-          <div className="mt-6 pt-4 flex items-center justify-center md:justify-start gap-8">
-            <div className="flex flex-col items-center md:items-start">
-              <span className="text-2xl font-bold text-[#8B5CF6]">500+</span>
-              <span className="text-sm text-gray-600">Kasus Terselesaikan</span>
-            </div>
-            <div className="flex flex-col items-center md:items-start">
-              <span className="text-2xl font-bold text-[#8B5CF6]">24/7</span>
-              <span className="text-sm text-gray-600">Dukungan</span>
-            </div>
-          </div>
         </motion.div>
   
         <motion.div 

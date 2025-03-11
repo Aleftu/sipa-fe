@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface FeatureCardProps {
@@ -6,24 +6,146 @@ interface FeatureCardProps {
   title: string;
   description: string;
   delay: number;
+  stat?: { value: string; label: string };
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay }) => {
+interface AnimatedCounterProps {
+  value: string;
+  suffix?: string;
+  duration?: number;
+}
+
+// Counter component that animates from 0 to target value
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', duration = 2 }) => {
+  const [count, setCount] = useState(0);
+  const isNumeric = !isNaN(parseFloat(value)) && isFinite(parseFloat(value));
+  const targetValue = isNumeric ? parseFloat(value) : 0;
+  
+  useEffect(() => {
+    // Only animate if value is a number
+    if (!isNumeric) {
+      setCount(0);
+      return;
+    }
+    
+    let startTime: number | null = null;
+    let animationFrameId: number;
+    
+    const updateCount = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / (duration * 1000), 1);
+      const currentCount = Math.floor(progress * targetValue);
+      
+      setCount(currentCount);
+      
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(updateCount);
+      } else {
+        setCount(targetValue);
+      }
+    };
+    
+    animationFrameId = requestAnimationFrame(updateCount);
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [targetValue, duration, isNumeric]);
+  
+  // Display the raw value if it's not a number (like "24/7")
+  const displayValue = isNumeric ? count : value;
+  
+  return (
+    <span className="text-3xl font-bold text-purple-600 tracking-tight">
+      {displayValue}{suffix}
+    </span>
+  );
+};
+
+const AnimatedStats: React.FC = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Start animation when component becomes visible
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+  
+  return (
+    <div className="mt-10 flex flex-wrap justify-center gap-8">
+      <motion.div 
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: isVisible ? 1 : 0.8, opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="flex flex-col items-center px-6 py-4 bg-white rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+        whileHover={{ y: -5 }}
+      >
+        <AnimatedCounter value="98" suffix="%" duration={2.5} />
+        <span className="text-sm text-gray-500">Tingkat Kepuasan</span>
+      </motion.div>
+      
+      <motion.div 
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: isVisible ? 1 : 0.8, opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="flex flex-col items-center px-6 py-4 bg-white rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+        whileHover={{ y: -5 }}
+      >
+        <AnimatedCounter value="500" suffix="+" duration={2.5} />
+        <span className="text-sm text-gray-500">Kasus Terselesaikan</span>
+      </motion.div>
+      
+      <motion.div 
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: isVisible ? 1 : 0.8, opacity: isVisible ? 1 : 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="flex flex-col items-center px-6 py-4 bg-white rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300"
+        whileHover={{ y: -5 }}
+      >
+        <AnimatedCounter value="24/7" duration={1} />
+        <span className="text-sm text-gray-500">Dukungan</span>
+      </motion.div>
+    </div>
+  );
+};
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay, stat }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       viewport={{ once: true }}
-      className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-100 group"
+      className="bg-white p-6 rounded-2xl shadow-lg transition-all duration-300 border border-purple-100 group relative overflow-hidden"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="w-14 h-14 mb-4 bg-purple-100 rounded-2xl flex items-center justify-center group-hover:bg-purple-600 transition-colors duration-300">
+      {/* Purple gradient accent */}
+      <div className="absolute -right-8 -top-8 w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full opacity-10 group-hover:scale-[6] transition-all duration-500"></div>
+      
+      <div className="w-14 h-14 mb-4 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-600 transition-colors duration-300">
         <div className="text-purple-600 text-2xl group-hover:text-white transition-colors duration-300">
           {icon}
         </div>
       </div>
-      <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+      
+      <h3 className="text-xl font-bold mb-2 text-gray-800 group-hover:text-purple-700 transition-colors duration-300">{title}</h3>
+      <p className="text-gray-600 z-10 relative">{description}</p>
+      
+      {stat && (
+        <motion.div 
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0, height: isHovered ? 'auto' : 0 }}
+          transition={{ duration: 0.3 }}
+          className="mt-4 pt-4 border-t border-purple-100"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-2xl font-bold text-purple-600">{stat.value}</span>
+            <span className="text-sm text-gray-500">{stat.label}</span>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
@@ -53,21 +175,115 @@ const SupportIcon = () => (
 );
 
 const FeatureSection: React.FC = () => {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ["Semua", "Keamanan", "Edukasi", "Dukungan"];
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 flex items-center justify-center px-6 md:px-24">
-      <div className="max-w-6xl mx-auto">
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.5 }} viewport={{ once: true }} className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-gray-900">Mengapa Memilih SIPA?</h2>
+    <div className="relative min-h-screen bg-gradient-to-br from-white via-purple-50 to-white flex items-center justify-center px-6 md:px-24 py-20 overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-20 left-20 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+      <div className="absolute top-40 right-20 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      
+      <div className="max-w-6xl mx-auto w-full z-10">
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          whileInView={{ opacity: 1 }} 
+          transition={{ duration: 0.5 }} 
+          viewport={{ once: true }} 
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl font-bold mb-4 text-gray-900">
+            <span className="inline-block relative">
+              Mengapa Memilih 
+              <span className="text-purple-700"> SIPA</span>
+              <motion.div 
+                className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-purple-600"
+                initial={{ width: 0 }}
+                whileInView={{ width: "100%" }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                viewport={{ once: true }}
+              ></motion.div>
+            </span>
+          </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Platform yang aman, terpercaya, dan efektif untuk melaporkan tindak kekerasan terhadap ibu dan anak.
           </p>
+          
+          {/* Replace static stats with AnimatedStats component */}
+          <AnimatedStats />
         </motion.div>
 
+        {/* Interactive tab filters */}
+        <div className="flex justify-center mb-10">
+          <div className="inline-flex p-1 bg-purple-100 rounded-lg">
+            {tabs.map((tab, index) => (
+              <button 
+                key={index}
+                onClick={() => setActiveTab(index)}
+                className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
+                  activeTab === index 
+                  ? 'bg-purple-600 text-white shadow-md' 
+                  : 'text-purple-600 hover:bg-purple-200'
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <FeatureCard icon={<ShieldIcon />} title="Keamanan & Privasi" description="Identitas pelapor dijamin kerahasiaannya." delay={0.1} />
-          <FeatureCard icon={<LightbulbIcon />} title="Edukasi & Pencegahan" description="Akses ke sumber daya edukasi." delay={0.2} />
-          <FeatureCard icon={<HeartIcon />} title="Dukungan Psikologis" description="Layanan konsultasi dan dukungan psikologis." delay={0.3} />
-          <FeatureCard icon={<SupportIcon />} title="Respon Cepat 24/7" description="Tim respons siap membantu kapanpun." delay={0.4} />
+          {(activeTab === 0 || activeTab === 1) && 
+            <FeatureCard 
+              icon={<ShieldIcon />} 
+              title="Keamanan & Privasi" 
+              description="Identitas pelapor dijamin kerahasiaannya dengan sistem enkripsi data terbaru." 
+              delay={0.1}
+              stat={{ value: "100%", label: "Kerahasiaan Terjamin" }}
+            />
+          }
+          
+          {(activeTab === 0 || activeTab === 2) && 
+            <FeatureCard 
+              icon={<LightbulbIcon />} 
+              title="Edukasi & Pencegahan" 
+              description="Akses ke sumber daya edukasi tentang pencegahan kekerasan dan trauma healing." 
+              delay={0.2}
+              stat={{ value: "200+", label: "Artikel Edukasi" }}
+            />
+          }
+          
+          {(activeTab === 0 || activeTab === 3) && 
+            <FeatureCard 
+              icon={<HeartIcon />} 
+              title="Dukungan Psikologis" 
+              description="Layanan konsultasi dan dukungan psikologis dari para ahli bersertifikat." 
+              delay={0.3}
+              stat={{ value: "50+", label: "Psikolog Professional" }}
+            />
+          }
+          
+          {(activeTab === 0 || activeTab === 3) && 
+            <FeatureCard 
+              icon={<SupportIcon />} 
+              title="Respon Cepat 24/7" 
+              description="Tim respons siap membantu kapanpun dengan waktu tanggap kurang dari 15 menit." 
+              delay={0.4}
+              stat={{ value: "<15m", label: "Waktu Respons" }}
+            />
+          }
+        </div>
+        
+        {/* Action button */}
+        <div className="text-center mt-12">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg shadow-lg hover:shadow-purple-200 transition-all duration-300"
+          >
+            Mulai Sekarang
+          </motion.button>
         </div>
       </div>
     </div>
