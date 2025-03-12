@@ -267,16 +267,6 @@ const FeaturesSection: React.FC = () => {
             />
           }
         </div>
-        
-        <div className="text-center mt-12">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg shadow-lg hover:shadow-purple-200 transition-all duration-300"
-          >
-            Mulai Sekarang
-          </motion.button>
-        </div>
       </div>
     </div>
   );

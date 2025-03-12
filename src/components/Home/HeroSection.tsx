@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Button from '../Ui/Button';
+import { Link } from 'react-router-dom';
 
 const HeroSection: React.FC = () => {
   return (
@@ -27,7 +28,9 @@ const HeroSection: React.FC = () => {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <Button variant="primary">Buat Pengaduan</Button>
-            <Button variant="secondary">Pelajari Lebih Lanjut</Button>
+            <Link to="/learn-more">
+              <Button variant="secondary">Pelajari Lebih Lanjut</Button>
+            </Link>
           </div>
         </motion.div>
   

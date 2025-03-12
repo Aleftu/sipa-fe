@@ -75,7 +75,7 @@ const Articles: React.FC = () => {
   const filteredArticles = activeCategory === 'All' ? articles : articles.filter(article => article.category === activeCategory);
   
   return (
-    <div className="bg-gradient-to-b from-white via-purple-50 to-white w-full min-h-screen py-20">
+    <div id="articles-section" className="bg-gradient-to-b from-white via-purple-50 to-white w-full min-h-screen py-20">
       <div className="container mx-auto px-4">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}

@@ -9,6 +9,7 @@ interface ButtonProps {
   icon?: React.ReactNode;
   disabled?: boolean;
   className?: string;
+  type?: "button" | "submit" | "reset"; // ✅ Tambahkan ini
 }
 
 const Button: React.FC<ButtonProps> = ({ 
