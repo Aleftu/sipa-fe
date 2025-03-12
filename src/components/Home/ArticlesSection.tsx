@@ -17,7 +17,7 @@ interface ArticleCardProps {
   index: number;
 }
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
+const ArticlesCard: React.FC<ArticleCardProps> = ({ article, index }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,14 +62,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, index }) => {
   );
 };
 
-const LatestArticles: React.FC = () => {
+const Articles: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('All');
   const categories = ['All', 'Edukasi', 'Tips', 'Psikologi'];
   
   const articles: Article[] = [
-    { id: 1, title: 'Disease detection, check up in the laboratory', excerpt: 'The role of the health laboratory is very important...', image: '/images/article-images/lab-check.jpg', category: 'Tips', readTime: '5 min', date: '12 Mar 2025' },
-    { id: 2, title: 'Herbal medicines that are safe for consumption', excerpt: 'Herbal medicine is very widely used...', image: '/images/article-images/herbal-medicine.jpg', category: 'Edukasi', readTime: '3 min', date: '10 Mar 2025' },
-    { id: 3, title: 'Natural care for healthy facial skin', excerpt: 'A healthy lifestyle should start from now...', image: '/images/article-images/facial-skin.jpg', category: 'Tips', readTime: '6 min', date: '8 Mar 2025' }
+    { id: 1, title: 'Disease detection, check up in the laboratory', excerpt: 'The role of the health laboratory is very important...', image: '/assets/tokdalang.jpg', category: 'Tips', readTime: '5 min', date: '12 Mar 2025' },
+    { id: 2, title: 'Herbal medicines that are safe for consumption', excerpt: 'Herbal medicine is very widely used...', image: '/assets/tokdalang.jpg', category: 'Edukasi', readTime: '3 min', date: '10 Mar 2025' },
+    { id: 3, title: 'Natural care for healthy facial skin', excerpt: 'A healthy lifestyle should start from now...', image: '/assets/tokdalang.jpg', category: 'Psikologi', readTime: '6 min', date: '8 Mar 2025' }
   ];
   
   const filteredArticles = activeCategory === 'All' ? articles : articles.filter(article => article.category === activeCategory);
@@ -111,7 +111,7 @@ const LatestArticles: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.map((article, index) => (
-            <ArticleCard key={article.id} article={article} index={index} />
+            <ArticlesCard key={article.id} article={article} index={index} />
           ))}
         </div>
       </div>
@@ -119,4 +119,4 @@ const LatestArticles: React.FC = () => {
   );
 };
 
-export default LatestArticles;
+export default Articles;

@@ -1,11 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import Button from '../common/ui/Button';
+import Button from '../Ui/Button';
 
 const HeroSection: React.FC = () => {
   return (
     <section className="relative bg-gradient-to-br from-[#F0E7FF] via-[#EAD6FF] to-[#F5EBFF] w-full min-h-screen pt-32 pb-32 px-6 md:px-24 transition-all duration-500 overflow-hidden flex flex-col justify-center">
-      {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-10 left-10 w-4 h-4 bg-[#C084FC] rounded-full animate-pulse"></div>
         <div className="absolute top-1/4 right-1/4 w-8 h-8 bg-[#A78BFA] rounded-full animate-pulse opacity-40"></div>
@@ -13,7 +12,6 @@ const HeroSection: React.FC = () => {
         <div className="absolute bottom-1/3 left-1/5 w-5 h-5 bg-[#DDD6FE] rounded-full animate-pulse opacity-60"></div>
       </div>
       
-      {/* Main content */}
       <div className="flex flex-col md:flex-row items-center justify-between relative z-10">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}

@@ -65,10 +65,7 @@ const Navbar: React.FC = () => {
             <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[#8B5CF6] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </Link>
         </div>
-
-        {/* Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          {/* Emergency Button with Dropdown */}
           <div className="relative" ref={emergencyDropdownRef}>
             <button 
               onClick={() => setIsEmergencyOpen(!isEmergencyOpen)}
@@ -121,7 +118,6 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
-          {/* Mobile Emergency Button */}
           <button 
             onClick={() => setIsEmergencyOpen(!isEmergencyOpen)}
             className="flex items-center p-2 rounded-full bg-red-600 hover:bg-red-700 text-white"
@@ -146,8 +142,6 @@ const Navbar: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white shadow-lg rounded-b-2xl mx-4 mt-2 py-4 px-6 animate-fadeIn">
           <div className="flex flex-col space-y-4">
@@ -161,8 +155,6 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Mobile Emergency Contacts Dropdown */}
       {isEmergencyOpen && (
         <div className="md:hidden bg-white shadow-lg rounded-2xl mx-4 mt-2 py-2 px-4 animate-fadeIn">
           <div className="py-2 border-b border-gray-100">

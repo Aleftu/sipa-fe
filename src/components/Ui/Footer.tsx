@@ -8,9 +8,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-gradient-to-b from-gray-50 to-purple-50 pt-12 pb-6 border-t border-purple-100">
       <div className="container mx-auto px-4">
-        {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {/* Company Info */}
           <div>
             <h2 className="text-2xl font-bold text-purple-700 mb-4">Sipa</h2>
             <p className="text-gray-700 mb-4">Platform pelaporan dan pendampingan untuk kasus kekerasan terhadap perempuan dan anak.</p>
@@ -29,8 +27,6 @@ const Footer: React.FC = () => {
               </div>
             </div>
           </div>
-          
-          {/* Newsletter */}
           <div>
             <h3 className="text-lg font-semibold text-purple-700 mb-4">Tetap Terhubung</h3>
             <p className="text-gray-600 mb-4">Dapatkan informasi terbaru seputar program dan kegiatan kami.</p>
@@ -45,7 +41,7 @@ const Footer: React.FC = () => {
                   type="submit" 
                   className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm rounded-r border border-purple-600 transition duration-200 mt-2 sm:mt-0"
                 >
-                  Langganan
+                  Kirim
                 </button>
               </div>
             </form>
@@ -66,11 +62,7 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        {/* Divider */}
         <div className="w-full h-0.5 bg-gradient-to-r from-purple-100 via-purple-300 to-purple-100 mb-6"></div>
-        
-        {/* Bottom Footer */}
         <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <p className="text-sm text-gray-600">
             © {currentYear} Sipa. Hak Cipta Dilindungi

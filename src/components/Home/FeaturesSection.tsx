@@ -15,14 +15,12 @@ interface AnimatedCounterProps {
   duration?: number;
 }
 
-// Counter component that animates from 0 to target value
 const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', duration = 2 }) => {
   const [count, setCount] = useState(0);
   const isNumeric = !isNaN(parseFloat(value)) && isFinite(parseFloat(value));
   const targetValue = isNumeric ? parseFloat(value) : 0;
   
   useEffect(() => {
-    // Only animate if value is a number
     if (!isNumeric) {
       setCount(0);
       return;
@@ -52,7 +50,6 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', d
     };
   }, [targetValue, duration, isNumeric]);
   
-  // Display the raw value if it's not a number (like "24/7")
   const displayValue = isNumeric ? count : value;
   
   return (
@@ -65,7 +62,6 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, suffix = '', d
 const AnimatedStats: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   
-  // Start animation when component becomes visible
   useEffect(() => {
     setIsVisible(true);
   }, []);
@@ -108,7 +104,7 @@ const AnimatedStats: React.FC = () => {
   );
 };
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay, stat }) => {
+const FeaturesCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay, stat }) => {
   const [isHovered, setIsHovered] = useState(false);
   
   return (
@@ -121,7 +117,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Purple gradient accent */}
+
       <div className="absolute -right-8 -top-8 w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full opacity-10 group-hover:scale-[6] transition-all duration-500"></div>
       
       <div className="w-14 h-14 mb-4 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-600 transition-colors duration-300">
@@ -174,13 +170,12 @@ const SupportIcon = () => (
   </svg>
 );
 
-const FeatureSection: React.FC = () => {
+const FeaturesSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ["Semua", "Keamanan", "Edukasi", "Dukungan"];
   
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-white via-purple-50 to-white flex items-center justify-center px-6 md:px-24 py-20 overflow-hidden">
-      {/* Background decorative elements */}
       <div className="absolute top-20 left-20 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
       <div className="absolute top-40 right-20 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
       <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
@@ -210,11 +205,9 @@ const FeatureSection: React.FC = () => {
             Platform yang aman, terpercaya, dan efektif untuk melaporkan tindak kekerasan terhadap ibu dan anak.
           </p>
           
-          {/* Replace static stats with AnimatedStats component */}
           <AnimatedStats />
         </motion.div>
 
-        {/* Interactive tab filters */}
         <div className="flex justify-center mb-10">
           <div className="inline-flex p-1 bg-purple-100 rounded-lg">
             {tabs.map((tab, index) => (
@@ -235,7 +228,7 @@ const FeatureSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {(activeTab === 0 || activeTab === 1) && 
-            <FeatureCard 
+            <FeaturesCard 
               icon={<ShieldIcon />} 
               title="Keamanan & Privasi" 
               description="Identitas pelapor dijamin kerahasiaannya dengan sistem enkripsi data terbaru." 
@@ -245,27 +238,27 @@ const FeatureSection: React.FC = () => {
           }
           
           {(activeTab === 0 || activeTab === 2) && 
-            <FeatureCard 
+            <FeaturesCard 
               icon={<LightbulbIcon />} 
               title="Edukasi & Pencegahan" 
               description="Akses ke sumber daya edukasi tentang pencegahan kekerasan dan trauma healing." 
               delay={0.2}
-              stat={{ value: "200+", label: "Artikel Edukasi" }}
+              stat={{ value: "50+", label: "Artikel Edukasi" }}
             />
           }
           
           {(activeTab === 0 || activeTab === 3) && 
-            <FeatureCard 
+            <FeaturesCard 
               icon={<HeartIcon />} 
               title="Dukungan Psikologis" 
-              description="Layanan konsultasi dan dukungan psikologis dari para ahli bersertifikat." 
+              description="Layanan Chatbot Untuk Konsultasi Awal." 
               delay={0.3}
               stat={{ value: "50+", label: "Psikolog Professional" }}
             />
           }
           
           {(activeTab === 0 || activeTab === 3) && 
-            <FeatureCard 
+            <FeaturesCard 
               icon={<SupportIcon />} 
               title="Respon Cepat 24/7" 
               description="Tim respons siap membantu kapanpun dengan waktu tanggap kurang dari 15 menit." 
@@ -275,7 +268,6 @@ const FeatureSection: React.FC = () => {
           }
         </div>
         
-        {/* Action button */}
         <div className="text-center mt-12">
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -290,4 +282,4 @@ const FeatureSection: React.FC = () => {
   );
 };
 
-export default FeatureSection;
+export default FeaturesSection;
