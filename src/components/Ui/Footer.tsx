@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaHeart } from 'react-icons/fa';
 import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md';
 
@@ -69,22 +70,25 @@ const Footer: React.FC = () => {
           </p>
           
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
-            <a href="/about" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
+            <Link to="/about" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
               Tentang
-            </a>
-            <a href="/services" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
+            </Link>
+            <Link to="/services" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
               Layanan
-            </a>
-            <a href="/contact" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
+            </Link>
+            <Link to="/contact" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
               Kontak
-            </a>
-            <a href="/privacy" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
+            </Link>
+            <Link to="/privacy" className="text-sm text-purple-600 hover:text-purple-800 transition duration-200">
               Kebijakan Privasi
-            </a>
+            </Link>
           </div>
           
           <p className="text-sm text-gray-600 flex items-center">
-            Dibuat dengan <FaHeart className="text-red-500 mx-1" size={14} /> oleh Tim Capstone
+            Dibuat dengan <FaHeart className="text-red-500 mx-1" size={14} /> oleh{" "}
+            <Link to="/team" className="text-purple-600 hover:text-purple-800 transition duration-200 ml-1 font-medium">
+              Tim Capstone
+            </Link>
           </p>
         </div>
       </div>

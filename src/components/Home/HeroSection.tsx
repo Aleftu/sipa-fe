@@ -27,7 +27,9 @@ const HeroSection: React.FC = () => {
             Tumbuhkan sikap <span className="text-[#8B5CF6] font-bold">#peduli sesama</span> terhadap kasus kekerasan pada ibu dan anak di sekitar anda. Laporkan tingkat kekerasan sebagai bentuk perlindungan dan kepedulian terhadap korban.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <Link to ="/pengaduan">
             <Button variant="primary">Buat Pengaduan</Button>
+            </Link>
             <Link to="/learn-more">
               <Button variant="secondary">Pelajari Lebih Lanjut</Button>
             </Link>

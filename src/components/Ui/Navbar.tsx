@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Button from './Button';
-import { FaPhoneAlt, FaHospital, FaShieldAlt, FaHandsHelping } from 'react-icons/fa';
+import { FaPhoneAlt, FaHospital, FaShieldAlt, FaHandsHelping, FaUserPlus } from 'react-icons/fa';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -117,6 +117,12 @@ const Navbar: React.FC = () => {
           <Link to="/status-pengaduan">
             <Button variant="outline" size="sm">Status Pengaduan</Button>
           </Link>
+          <Link to="/register">
+            <Button variant="secondary" size="sm" className="flex items-center">
+              <FaUserPlus className="mr-2" />
+              Registrasi
+            </Button>
+          </Link>
           <Link to="/login">
             <Button variant="primary" size="sm">Login</Button>
           </Link>
@@ -155,6 +161,20 @@ const Navbar: React.FC = () => {
           <Link to="/pelayanan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pelayanan</Link>
           <Link to="/pengaduan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pengaduan</Link>
           <a href="#articles-section" onClick={(e) => { e.preventDefault(); scrollToArticles(); }} className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]">Artikel</a>
+          <div className="flex flex-col space-y-2 mt-3 pt-3 border-t border-gray-100">
+            <Link to="/status-pengaduan" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="outline" size="sm" className="w-full">Status Pengaduan</Button>
+            </Link>
+            <Link to="/register" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="secondary" size="sm" className="w-full flex items-center justify-center">
+                <FaUserPlus className="mr-2" />
+                Registrasi
+              </Button>
+            </Link>
+            <Link to="/login" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+              <Button variant="primary" size="sm" className="w-full">Login</Button>
+            </Link>
+          </div>
         </div>
       )}
     </nav>
