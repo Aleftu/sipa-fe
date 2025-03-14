@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
 import { FaPhoneAlt, FaHospital, FaShieldAlt, FaHandsHelping, FaUserPlus } from 'react-icons/fa';
 
@@ -8,6 +8,8 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
   const emergencyDropdownRef = useRef<HTMLDivElement>(null);
+  const emergencyButtonRef = useRef<HTMLButtonElement>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,12 +31,21 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fungsi untuk menggulir ke bagian artikel
-  const scrollToArticles = () => {
-    const articlesSection = document.getElementById('articles-section');
-    if (articlesSection) {
-      articlesSection.scrollIntoView({ behavior: 'smooth' });
+  // Check if we're on the home page
+  const isHomePage = () => {
+    return location.pathname === '/';
+  };
+
+  // Scroll to articles section if on home page, otherwise navigate to articles page
+  const handleArticlesClick = (e: React.MouseEvent) => {
+    if (isHomePage()) {
+      e.preventDefault();
+      const articlesSection = document.getElementById('articles-section');
+      if (articlesSection) {
+        articlesSection.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    // No need to navigate programmatically since the Link component will handle it
     setIsMobileMenuOpen(false);
   };
 
@@ -53,16 +64,13 @@ const Navbar: React.FC = () => {
           <Link to="/pengaduan" className="text-gray-700 font-medium hover:text-[#8B5CF6] transition-colors relative group">
             Pengaduan
           </Link>
-          <a
-            href="#articles-section"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToArticles();
-            }}
+          <Link
+            to={isHomePage() ? '#articles-section' : '/artikel'}
+            onClick={handleArticlesClick}
             className="text-gray-700 font-medium hover:text-[#8B5CF6] transition-colors relative group"
           >
             Artikel
-          </a>
+          </Link>
         </div>
 
         {/* Darurat dan Login */}
@@ -130,13 +138,54 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center space-x-2">
-          <button 
-            onClick={() => setIsEmergencyOpen(!isEmergencyOpen)}
-            className="flex items-center p-2 rounded-full bg-red-600 hover:bg-red-700 text-white"
-            aria-label="Menu darurat"
-          >
-            <FaPhoneAlt className="text-sm" />
-          </button>
+          <div className="relative" style={{ position: 'static' }} ref={emergencyDropdownRef}>
+            <button 
+              ref={emergencyButtonRef}
+              onClick={() => setIsEmergencyOpen(!isEmergencyOpen)}
+              className="flex items-center p-2 rounded-full bg-red-600 hover:bg-red-700 text-white"
+              aria-label="Menu darurat"
+            >
+              <FaPhoneAlt className="text-sm" />
+            </button>
+
+            {/* Dropdown menu for mobile - centered with fixed position */}
+            {isEmergencyOpen && (
+              <div className="fixed left-1/2 transform -translate-x-1/2 mt-2 w-64 bg-white rounded-lg shadow-xl py-2 border border-gray-100 z-50" style={{ top: '60px' }}>
+                <div className="px-4 py-2 border-b border-gray-100">
+                  <h3 className="font-bold text-gray-800">Kontak Darurat</h3>
+                  <p className="text-sm text-gray-600">Pilih nomor untuk menghubungi</p>
+                </div>
+                <div className="py-2">
+                  {[
+                    { name: 'Polisi', number: '110', icon: <FaShieldAlt className="text-blue-600" /> },
+                    { name: 'Ambulans', number: '118', icon: <FaHospital className="text-red-600" /> },
+                    { name: 'Hotline Pengaduan Kekerasan', number: '0800-123-456', icon: <FaHandsHelping className="text-purple-600" /> },
+                    { name: 'Pusat Layanan Terpadu', number: '0800-987-654', icon: <FaPhoneAlt className="text-green-600" /> }
+                  ].map((contact, index) => (
+                    <a 
+                      key={index}
+                      href={`tel:${contact.number.replace(/-/g, '')}`}
+                      className="flex items-center px-4 py-3 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full mr-3">
+                        {contact.icon}
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-800">{contact.name}</div>
+                        <div className="text-sm text-gray-600">{contact.number}</div>
+                      </div>
+                      <div className="w-8 h-8 flex items-center justify-center bg-green-100 rounded-full">
+                        <FaPhoneAlt className="text-green-600 text-sm" />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+                <div className="px-4 py-2 border-t border-gray-100">
+                  <p className="text-xs text-gray-500 text-center">Layanan darurat 24/7</p>
+                </div>
+              </div>
+            )}
+          </div>
 
           <button 
             className="text-gray-700 focus:outline-none"
@@ -160,7 +209,13 @@ const Navbar: React.FC = () => {
         <div className="md:hidden bg-white shadow-lg rounded-b-2xl mx-4 mt-2 py-4 px-6">
           <Link to="/pelayanan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pelayanan</Link>
           <Link to="/pengaduan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pengaduan</Link>
-          <a href="#articles-section" onClick={(e) => { e.preventDefault(); scrollToArticles(); }} className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]">Artikel</a>
+          <Link 
+            to={isHomePage() ? '#articles-section' : '/artikel'} 
+            className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" 
+            onClick={handleArticlesClick}
+          >
+            Artikel
+          </Link>
           <div className="flex flex-col space-y-2 mt-3 pt-3 border-t border-gray-100">
             <Link to="/status-pengaduan" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
               <Button variant="outline" size="sm" className="w-full">Status Pengaduan</Button>

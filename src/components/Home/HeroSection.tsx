@@ -20,7 +20,7 @@ const HeroSection: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center md:text-left md:w-1/2 space-y-6"
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-black leading-tight">
+          <h1 className="text-5xl md:text-6xl font-semibold text-black leading-tight">
             Laporkan Tindak Kekerasan Ibu dan Anak
           </h1>
           <p className="text-lg text-[#6B7280] max-w-xl">

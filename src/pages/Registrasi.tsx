@@ -26,10 +26,6 @@ const Register: React.FC = () => {
     }, 1500);
   };
 
-  const handleBackHome = () => {
-    navigate('/');
-  };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -40,16 +36,21 @@ const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0E7FF] via-[#EAD6FF] to-[#F5EBFF] flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Back to home button */}
-      <button 
-  onClick={handleBackHome}
-  className="absolute top-6 left-6 flex items-center text-[#8B5CF6] hover:text-[#7C3AED] transition-colors font-medium"
->
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-  </svg>
-  Kembali ke Beranda
-</button>
+      {/* Back to Home button */}
+      <div className="absolute top-4 left-4 z-20">
+        <Button 
+          variant="secondary" 
+          size="sm" 
+          onClick={() => navigate('/')}
+          icon={
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          }
+        >
+          Kembali ke Beranda
+        </Button>
+      </div>
       
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
