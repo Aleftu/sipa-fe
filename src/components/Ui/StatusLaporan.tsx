@@ -13,9 +13,9 @@ const StatusLaporan: React.FC = () => {
     }
   }, [isModalOpen, status]);
 
-//   const handleModalStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-//     setModalStatus(event.target.value);
-//   };
+  const handleModalStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setModalStatus(event.target.value);
+  };
 
   const saveChanges = () => {
     setStatus(modalStatus);
@@ -107,7 +107,7 @@ const StatusLaporan: React.FC = () => {
         initial="hidden"
         animate="visible"
         exit="exit"
-        transition={{ duration: 0.5 }} // Durasi animasi 0.3 detik
+        transition={{ duration: 0.5 }} 
       >
          <div className="absolute inset-0 overflow-hidden">
               {[...Array(10)].map((_, i) => (
@@ -135,10 +135,10 @@ const StatusLaporan: React.FC = () => {
         <motion.div
           className="bg-white p-6 m-10 shadow-lg w-96 rounded-md"
           style={{ width: "400px", minHeight: "300px" }}
-          initial={{ opacity: 0, y: -20 }} // Awal: modal naik sedikit
-          animate={{ opacity: 1, y: 0 }}   // Setelah muncul: modal turun ke posisi normal
-          exit={{ opacity: 0, y: -20 }}    // Saat ditutup: modal naik lagi
-          transition={{ duration: 0.5 }}   // Durasi animasi
+          initial={{ opacity: 0, y: -20 }} 
+          animate={{ opacity: 1, y: 0 }}   
+          exit={{ opacity: 0, y: -20 }}    
+          transition={{ duration: 0.5 }}  
         >
 
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -156,7 +156,7 @@ const StatusLaporan: React.FC = () => {
               <div className={`p-4 rounded shadow ${bgColor} transition-all mb-4`}>
                 <label className="block text-gray-800">Status</label>
                 <select
-                  onChange={handleStatusChange}
+                  onChange={handleModalStatusChange}
                   className="w-full p-2 focus:outline-none border border-gray-300 rounded focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition-colors"
                 >
                   <option value="Pending">Pending</option>

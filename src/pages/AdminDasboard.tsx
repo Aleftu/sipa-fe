@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom"; 
 import Sidebar from "../components/Ui/D.Admin"; 
-import FormLaporan from "../components/Ui/LaporanKorban";
 import StatusLaporan from "../components/Ui/StatusLaporan";
 import TingkatKekerasan from "../components/Ui/TingkatKekerasan";
 
@@ -49,16 +48,15 @@ const Dashboard: React.FC = () => {
 
                 {/* Konten dinamis berdasarkan menu yang dipilih */}
                 <div className="mt-6">
-                    {selectedMenu === "laporan" && <FormLaporan />}
-                    {selectedMenu === "tingkat" && <TingkatKekerasan />}
-                    {selectedMenu === "status" && (
+                    {selectedMenu === "laporan" && (
                         <>
                         <button className="mb-1 mx-3 px-4 py-2 mt-7 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             Status Laporan
                         </button>
                         <StatusLaporan />
-                    </>
-                    )}
+                    </> 
+                     )}
+                    {selectedMenu === "tingkat" && <TingkatKekerasan />}
                 </div>
             </div>
         </div>
