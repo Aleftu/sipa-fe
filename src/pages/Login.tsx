@@ -3,19 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Components/Ui/Button';
 import Loading from '../Components/Ui/Loading';
-// Interface untuk data pengguna
-// interface User {
-//   email: string;
-//   role: "admin" | "user";
-//   token: string;
-// }
 
-// // Interface untuk AuthContext
-// interface AuthContextType {
-//   user: User | null;
-//   login: (email: string, password: string) => Promise<void>;
-//   logout: () => void;
-// }
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +31,6 @@ const Login: React.FC = () => {
       
       
       setUser({ email, role: data.role, token: data.token });
-      // const userRole = email.includes("admin") ? "admin" : "user"; 
       if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.user?.role); 
@@ -52,8 +39,13 @@ const Login: React.FC = () => {
         console.error("Login gagal:", data.message);
     }
   
-      // Navigasi berdasarkan role user (logic baru:)
-      if (data.user?.role === "admin" ) {
+
+      // Simpan token atau informasi user
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+  
+      // Navigasi berdasarkan role user
+      if (data.role === "admin") {
         navigate("/dashboard");
       } else {
         navigate("/");
@@ -66,16 +58,6 @@ const Login: React.FC = () => {
       setIsLoading(false);
     }
   };
-    // Simulate API call
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    //   // Handle login logic here
-    //   console.log('Login attempt with:', { email, password, rememberMe });
-
-    
-       // Simpan status login 
-      //  localStorage.setItem("isLoggedIn", "true");
-      //  localStorage.setItem("role", userRole);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

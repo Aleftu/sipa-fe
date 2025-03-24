@@ -2,32 +2,43 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
+
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState("");
-  const [newPassword, setnewPassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (newPassword !== confirmPassword) {
+      alert("Password dan konfirmasi password harus sama.");
+      return;
+    }
+
     try {
-      const response = await fetch ("https://api-sipa-capstone-production.up.railway.app/forgot-password", {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({email, newPassword, confirmPassword}),
-      });
+      const response = await fetch(
+        "https://api-sipa-capstone-production.up.railway.app/forgot-password",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, newPassword }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        alert("Password Anda berhasil di perbarui !");
+        alert("Password berhasil diperbarui!");
         navigate("/login");
-      }else {
+      } else {
         alert(data.message || "Terjadi kesalahan.");
       }
     } catch (error) {
-      alert(error.message);
+      alert("Terjadi kesalahan saat menghubungi server. Coba lagi nanti.");
+      console.error("Error:", error);
     }
   };
 
@@ -47,55 +58,53 @@ const ForgotPassword: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div>
-          <label
-            htmlFor="email"
-            className="block text-gray-700 font-medium mb-2"
-          >
+          <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
             Email
           </label>
           <input
             type="email"
+            id="email"
             placeholder="example@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full p-2 border rounded focus:ring-purple-500 focus:border-purple-500"
             required
+            aria-label="Email"
           />
-          </div>
-          <label
-            htmlFor="nePasword"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Password baru
+
+          <label htmlFor="newPassword" className="block text-gray-700 font-medium mb-2 mt-4">
+            Password Baru
           </label>
           <input
             type="password"
+            id="newPassword"
             placeholder="••••••••"
             value={newPassword}
-            onChange={(e) => setnewPassword(e.target.value)}
+            onChange={(e) => setNewPassword(e.target.value)}
             className="w-full p-2 border rounded focus:ring-purple-500 focus:border-purple-500"
             required
+            aria-label="Password Baru"
           />
-          <label
-            htmlFor="confirmPassword"
-            className="block text-gray-700 font-medium mb-2"
-          >
-            Konfirmasi password
+
+          <label htmlFor="confirmPassword" className="block text-gray-700 font-medium mb-2 mt-4">
+            Konfirmasi Password
           </label>
           <input
             type="password"
+            id="confirmPassword"
             placeholder="••••••••"
             value={confirmPassword}
-            onChange={(e) => setconfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full p-2 border rounded focus:ring-purple-500 focus:border-purple-500"
             required
+            aria-label="Konfirmasi Password"
           />
+
           <button
             type="submit"
             className="mt-4 w-full py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
           >
-            Simpan
+            Kirim
           </button>
         </form>
       </div>

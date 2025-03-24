@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Ui/D.Admin"; 
 import StatusLaporan from "../components/Ui/StatusLaporan";
 import TingkatKekerasan from "../components/Ui/TingkatKekerasan";
+import FormLaporan from "../components/Ui/LaporanKorban";
+
 
 const Dashboard: React.FC = () => {
     const navigate = useNavigate(); 
@@ -45,6 +47,7 @@ const Dashboard: React.FC = () => {
                     <h1 className="text-2xl font-semibold">Dashboard</h1>
                     <hr className="w-36 border-black mt-2 border-t-2" />
                 </div>
+                
 
                 {/* Konten dinamis berdasarkan menu yang dipilih */}
                 <div className="mt-6">
@@ -57,6 +60,9 @@ const Dashboard: React.FC = () => {
                     </> 
                      )}
                     {selectedMenu === "tingkat" && <TingkatKekerasan />}
+                    {selectedMenu === "laporan" && <FormLaporan />}
+                    {selectedMenu === "tingkat" && <div>Laporan Tingkat Kekerasan</div>}
+                    {selectedMenu === "status" && <FormLaporan />}
                 </div>
             </div>
         </div>
