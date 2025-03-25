@@ -34,7 +34,7 @@ const LearnMore: React.FC = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-4xl md:text-5xl font-bold text-center mb-6"
+            className="text-4xl md:text-5xl font-semibold text-center mb-6"
           >
             Pelajari Lebih Lanjut
           </motion.h1>
@@ -60,7 +60,7 @@ const LearnMore: React.FC = () => {
         >
           <motion.h2 
             variants={itemVariants}
-            className="text-3xl font-bold mb-10 text-center"
+            className="text-3xl font-semibold mb-10 text-center"
           >
             Tentang Aplikasi
           </motion.h2>
@@ -128,7 +128,7 @@ const LearnMore: React.FC = () => {
         >
           <motion.h2 
             variants={itemVariants}
-            className="text-3xl font-bold mb-10 text-center"
+            className="text-3xl font-semibold mb-10 text-center"
           >
             Cara Penggunaan
           </motion.h2>
@@ -219,7 +219,7 @@ const LearnMore: React.FC = () => {
         >
           <motion.h2 
             variants={itemVariants}
-            className="text-3xl font-bold mb-10 text-center"
+            className="text-3xl font-semibold mb-10 text-center"
           >
             Sumber Daya
           </motion.h2>
@@ -320,7 +320,7 @@ const LearnMore: React.FC = () => {
         >
           <motion.h2 
             variants={itemVariants}
-            className="text-3xl font-bold mb-10 text-center"
+            className="text-3xl font-semibold mb-10 text-center"
           >
             Pertanyaan Umum
           </motion.h2>

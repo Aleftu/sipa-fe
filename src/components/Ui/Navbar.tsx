@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'py-3 bg-white/95 shadow-md backdrop-blur-md' : 'py-6 bg-transparent'}`}>
       <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
         <Link to="/" className="flex items-center">
-          <img src="/assets/logo.png" alt="SIPA Logo" className="w-12 h-12 mr-2" />
+          <img src="/assets/logo.png" alt="SIPA Logo" className="w-14 h-16 mr-2" />
         </Link>
 
         {/* Desktop Menu */}
@@ -122,6 +122,7 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
+          
           <Link to="/status-pengaduan">
             <Button variant="outline" size="sm">Status Pengaduan</Button>
           </Link>

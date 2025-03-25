@@ -188,7 +188,7 @@ const FeaturesSection: React.FC = () => {
           viewport={{ once: true }} 
           className="text-center mb-16"
         >
-          <h2 className="text-4xl font-bold mb-4 text-gray-900">
+          <h2 className="text-4xl font-bold mb-4 text-gray-800">
             <span className="inline-block relative">
               Mengapa Memilih 
               <span className="text-purple-700"> SIPA</span>

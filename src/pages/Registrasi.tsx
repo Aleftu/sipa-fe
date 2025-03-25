@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Components/Ui/Button';
 
 const Register: React.FC = () => {
-  const [fullName, setFullName] = useState('');
+  const [nama, setNama] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -17,13 +17,33 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+  
+    if (password !== confirmPassword) {
+      alert("Password dan konfirmasi password tidak sama!");
       setIsLoading(false);
-      // Handle registration logic here
-      console.log('Registration attempt with:', { fullName, email, password, agreeTerms });
-    }, 1500);
+      return;
+    }
+  
+    try {
+      const response = await fetch("https://api-sipa-capstone-production.up.railway.app/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nama, email, password, confirmPassword }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        alert("Pendaftaran berhasil!");
+        navigate("/login");
+      } else {
+        alert("Gagal Mendaftar !");
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -92,18 +112,18 @@ const Register: React.FC = () => {
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="nama" className="block text-sm font-medium text-gray-700">
                     Nama Lengkap
                   </label>
                   <div className="mt-1">
                     <input
-                      id="fullName"
-                      name="fullName"
+                      id="nama"
+                      name="nama"
                       type="text"
                       autoComplete="name"
                       required
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      value={nama}
+                      onChange={(e) => setNama(e.target.value)}
                       className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#8B5CF6] focus:border-[#8B5CF6] transition-colors"
                       placeholder="Nama Lengkap"
                     />

@@ -2,26 +2,80 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Components/Ui/Button';
+import Loading from '../Components/Ui/Loading';
+// Interface untuk data pengguna
+// interface User {
+//   email: string;
+//   role: "admin" | "user";
+//   token: string;
+// }
 
+// // Interface untuk AuthContext
+// interface AuthContextType {
+//   user: User | null;
+//   login: (email: string, password: string) => Promise<void>;
+//   logout: () => void;
+// }
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const [user, setUser] = useState(null);
+   const navigate = useNavigate();
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch("https://api-sipa-capstone-production.up.railway.app/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();   
+      if (!response.ok) {
+        throw new Error(data.message || "Login gagal");
+      }
+      console.log(data);
+      
+      
+      setUser({ email, role: data.role, token: data.token });
+      // const userRole = email.includes("admin") ? "admin" : "user"; 
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.user?.role); 
+        setUser(data.user);
+    } else {
+        console.error("Login gagal:", data.message);
+    }
+  
+      // Navigasi berdasarkan role user (logic baru:)
+      if (data.user?.role === "admin" ) {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+    console.log("Redirecting to:", data.role === "admin" ? "/dashboard" : "/"); //cek ke konsole apakah admin di arahkan ke dashboard ketika login
+    } catch (error: any) {
+      console.error("Error:", error);
+      alert(error.message); 
+    } finally {
       setIsLoading(false);
-      // Handle login logic here
-      console.log('Login attempt with:', { email, password, rememberMe });
-    }, 1500);
+    }
   };
+    // Simulate API call
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    //   // Handle login logic here
+    //   console.log('Login attempt with:', { email, password, rememberMe });
+
+    
+       // Simpan status login 
+      //  localStorage.setItem("isLoggedIn", "true");
+      //  localStorage.setItem("role", userRole);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -81,7 +135,7 @@ const Login: React.FC = () => {
                 </Link>
               </p>
             </div>
-            
+            {isLoading && <Loading />}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
