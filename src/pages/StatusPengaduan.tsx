@@ -24,34 +24,73 @@ const StatusPengaduan: React.FC = () => {
     setIsLoading(true);
     setError('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Call the actual API
+      const response = await fetch(`https://api-sipa-capstone-production.up.railway.app/cek-pengaduan?kode=${nomorPengaduan}`);
+      const data = await response.json();
+      
       setIsLoading(false);
       setSearchPerformed(true);
       
-      // Demo data - in a real app, this would come from your API
-      if (nomorPengaduan === '123456') {
+      if (response.ok && data) {
+        // Format the API response to match our UI requirements
         setStatusData({
-          nomorPengaduan: '123456',
-          tanggalPengaduan: '10 Maret 2025',
-          statusPengaduan: 'Dalam Proses',
-          namaPelapor: 'Sarah Wulandari',
-          kategori: 'Kekerasan Dalam Rumah Tangga',
-          deskripsi: 'Laporan mengenai kekerasan verbal dan fisik yang terjadi di Jalan Kenanga No. 45, Jakarta Timur',
-          tingkatKeparahan: 'Tinggi',
+          nomorPengaduan: data.kode,
+          tanggalPengaduan: data.tanggal ? new Date(data.tanggal).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          }) : 'Tidak tersedia',
+          statusPengaduan: formatStatus(data.status_pengaduan.status),
+          namaPelapor: 'Tidak tersedia', // API doesn't provide this
+          kategori: 'Pengaduan Umum', // API doesn't provide this
+          deskripsi: data.kronologi,
+          lokasi: data.lokasi,
+          tingkatKeparahan: 'Sedang', // API doesn't provide this
+          bukti: data.bukti,
           penanganan: [
-            { tanggal: '10 Maret 2025', deskripsi: 'Pengaduan diterima dan diverifikasi', status: 'Selesai' },
-            { tanggal: '11 Maret 2025', deskripsi: 'Tim respons cepat dikirim ke lokasi', status: 'Selesai' },
-            { tanggal: '11 Maret 2025', deskripsi: 'Korban diamankan dan dibawa ke rumah aman', status: 'Selesai' },
-            { tanggal: '12 Maret 2025', deskripsi: 'Konseling awal dengan korban', status: 'Dalam Proses' },
-            { tanggal: '15 Maret 2025', deskripsi: 'Kasus didaftarkan ke pengadilan', status: 'Menunggu' }
+            { 
+              tanggal: data.tanggal ? new Date(data.tanggal).toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+              }) : 'Tidak tersedia', 
+              deskripsi: 'Pengaduan diterima dan diverifikasi', 
+              status: 'Selesai' 
+            },
+            { 
+              tanggal: 'Saat ini', 
+              deskripsi: `Status pengaduan: ${formatStatus(data.status_pengaduan.status)}${data.status_pengaduan.keterangan ? ` - ${data.status_pengaduan.keterangan}` : ''}`, 
+              status: data.status_pengaduan.status === 'antre' ? 'Menunggu' : 
+                     data.status_pengaduan.status === 'selesai' ? 'Selesai' : 'Dalam Proses'
+            }
           ]
         });
       } else {
         setStatusData(null);
         setError('Nomor pengaduan tidak ditemukan. Silahkan periksa kembali nomor yang Anda masukkan.');
       }
-    }, 1500);
+    } catch (err) {
+      setIsLoading(false);
+      setSearchPerformed(true);
+      setStatusData(null);
+      setError('Terjadi kesalahan saat menghubungi server. Silahkan coba lagi nanti.');
+      console.error('Error fetching data:', err);
+    }
+  };
+
+  // Function to format the status to be more user-friendly
+  const formatStatus = (status: string) => {
+    switch(status) {
+      case 'antre':
+        return 'Menunggu';
+      case 'ditangani':
+        return 'Dalam Proses';
+      case 'selesai':
+        return 'Selesai';
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
   };
 
   // Function to get status color
@@ -111,7 +150,7 @@ const StatusPengaduan: React.FC = () => {
                   </div>
                   <input
                     type="text"
-                    placeholder="Masukkan nomor pengaduan (coba: 123456)"
+                    placeholder="Masukkan nomor pengaduan (contoh: k0Yay2jT9b)"
                     value={nomorPengaduan}
                     onChange={(e) => setNomorPengaduan(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-[#8B5CF6] focus:border-[#8B5CF6] transition-colors"
@@ -170,23 +209,23 @@ const StatusPengaduan: React.FC = () => {
                   {/* Details */}
                   <div className="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h3 className="font-medium text-gray-500 text-sm mb-2">INFORMASI PELAPOR</h3>
-                      <p className="font-medium text-gray-900">{statusData.namaPelapor}</p>
+                      <h3 className="font-medium text-gray-500 text-sm mb-2">LOKASI KEJADIAN</h3>
+                      <p className="font-medium text-gray-900">{statusData.lokasi || 'Tidak tersedia'}</p>
                     </div>
                     <div>
                       <h3 className="font-medium text-gray-500 text-sm mb-2">KATEGORI KASUS</h3>
                       <p className="font-medium text-gray-900">{statusData.kategori}</p>
                     </div>
                     <div className="md:col-span-2">
-                      <h3 className="font-medium text-gray-500 text-sm mb-2">DESKRIPSI KASUS</h3>
-                      <p className="text-gray-700">{statusData.deskripsi}</p>
+                      <h3 className="font-medium text-gray-500 text-sm mb-2">KRONOLOGI KEJADIAN</h3>
+                      <p className="text-gray-700">{statusData.deskripsi || 'Tidak tersedia'}</p>
                     </div>
-                    <div>
-                      <h3 className="font-medium text-gray-500 text-sm mb-2">TINGKAT KEPARAHAN</h3>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                        {statusData.tingkatKeparahan}
-                      </span>
-                    </div>
+                    {statusData.bukti && (
+                      <div className="md:col-span-2">
+                        <h3 className="font-medium text-gray-500 text-sm mb-2">BUKTI</h3>
+                        <p className="text-gray-700">{statusData.bukti}</p>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Timeline */}
@@ -279,7 +318,7 @@ const StatusPengaduan: React.FC = () => {
               <div className="px-6 py-6 sm:px-10 bg-purple-50">
                 <h3 className="font-medium text-purple-800 mb-2">Info Pencarian</h3>
                 <p className="text-sm text-purple-700 mb-4">
-                  Nomor pengaduan terdiri dari 6 digit angka yang diberikan saat Anda membuat pengaduan.
+                  Nomor pengaduan adalah kode unik yang diberikan saat Anda membuat pengaduan.
                   Gunakan nomor ini untuk memeriksa status dan perkembangan penanganan kasus Anda.
                 </p>
                 <div className="bg-white p-4 rounded-lg border border-purple-200 text-sm">

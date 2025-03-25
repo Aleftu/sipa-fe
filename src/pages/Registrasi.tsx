@@ -232,43 +232,6 @@ const Register: React.FC = () => {
                 </Button>
               </div>
             </form>
-
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">
-                    Atau daftar dengan
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <div>
-                  <button
-                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    <svg className="h-5 w-5 mr-2" fill="#4285F4" viewBox="0 0 24 24">
-                      <path d="M12.545,12.151L12.545,12.151c0,1.054,0.855,1.909,1.909,1.909h3.536c-0.519,2.287-2.524,4.01-4.991,4.01c-2.817,0-5.1-2.283-5.1-5.1 s2.283-5.1,5.1-5.1c1.386,0,2.641,0.553,3.569,1.446l1.341-1.341C16.785,6.99,15.305,6.1,13.645,6.1c-3.87,0-7,3.13-7,7s3.13,7,7,7 c3.87,0,7-3.13,7-7v-1.909h-6.19C13.399,11.191,12.545,12.045,12.545,12.151z" />
-                    </svg>
-                    Google
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    <svg className="h-5 w-5 mr-2" fill="#1877F2" viewBox="0 0 24 24">
-                      <path d="M13.397,20.997v-8.196h2.765l0.411-3.209h-3.176V7.548c0-0.926,0.258-1.56,1.587-1.56h1.684V3.127 C15.849,3.039,15.025,2.997,14.201,3c-2.444,0-4.122,1.492-4.122,4.231v2.355H7.332v3.209h2.753v8.202H13.397z" />
-                    </svg>
-                    Facebook
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </motion.div>

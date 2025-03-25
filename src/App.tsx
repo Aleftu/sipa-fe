@@ -10,7 +10,9 @@ import FormPengaduan from '../src/Pages/FormPengaduan'
 import Terms from '../src/Components/Home/Terms'
 import Privacy from '../src/Components/Home/Privacy'
 import AnimatedCursor from './Components/Ui/Animated';
-import ArticlesPage from '../src/Components/Home/ArticlesSection'; // Import the full Articles page
+import ArticlesPage from '../src/Components/Home/ArticlesSection'; 
+import PelayananPage from '../src/Pages/Pelayanan'
+import HalamanBantuan from '../src/Pages/Bantuan'
 
 const App: React.FC = () => {
   return (
@@ -27,7 +29,9 @@ const App: React.FC = () => {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/artikel" element={<ArticlesPage />} /> {/* Add the articles page route */}
+        <Route path="/artikel" element={<ArticlesPage />} /> 
+        <Route path="/pelayanan" element={<PelayananPage />} />
+        <Route path="/bantuan" element={<HalamanBantuan />} />
       </Routes>
       </div>
     </Router>

@@ -57,7 +57,7 @@ const TeamPage: React.FC = () => {
       image: "/assets/tokdalang.jpg",
       github: "https://github.com/agussupriyanto",
       linkedin: "https://linkedin.com/in/agussupriyanto",
-      email: "agus@sipa.id",
+      email: "thomas@sipa.id",
       instagram: "https://instagram.com/thomaschristian",
       bio: "Specializes in server optimization, authentication systems, and creating robust backend architectures."
     },
@@ -67,7 +67,7 @@ const TeamPage: React.FC = () => {
       image: "/assets/tokdalang.jpg",
       github: "https://github.com/SuryakandaRagaWistara",
       linkedin: "https://linkedin.com/in/anitarahman",
-      email: "anita@sipa.id",
+      email: "bintang@sipa.id",
       instagram: "https://instagram.com/bintangraga",
       bio: "Data scientist focused on NLP and sentiment analysis for identifying cases of violence in text reports."
     },
@@ -76,8 +76,8 @@ const TeamPage: React.FC = () => {
       role: "Machine Learning Engineer",
       image: "/assets/tokdalang.jpg",
       github: "https://github.com/farhanabdullah",
-      linkedin: "https://linkedin.com/in/farhanabdullah",
-      email: "farhan@sipa.id",
+      linkedin: "https://linkedin.com/in/yogikautsar",
+      email: "yogi@sipa.id",
       instagram: "https://instagram.com/yogikautsar",
       bio: "ML engineer with expertise in pattern recognition and classification algorithms for early detection systems."
     }
