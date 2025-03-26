@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch, FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import Button from '../Components/Ui/Button';
 import Navbar from '../Components/Ui/Navbar';
@@ -33,7 +33,9 @@ const FormPengaduan: React.FC = () => {
     kronologi: '',
     bukti: null as File | null,
     buktiPreview: '',
-    tanggalLaporan: getCurrentDate()
+    tanggalLaporan: getCurrentDate(),
+    umur: '',
+    gender: ''
   });
   
   // Update date whenever component is mounted or re-rendered
@@ -44,7 +46,7 @@ const FormPengaduan: React.FC = () => {
     }));
   }, []);
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -86,9 +88,11 @@ const FormPengaduan: React.FC = () => {
         {
           lokasi: formData.lokasi,
           kronologi: formData.kronologi,
-          tanggalLaporan: currentDate, // Use YYYY-MM-DD format
-          tanggal: currentDate, // Explicitly set tanggal as well
-          bukti: '' // Send an empty string if no file is selected
+          tanggalLaporan: currentDate,
+          tanggal: currentDate,
+          bukti: '', // Send an empty string if no file is selected
+          umur: parseInt(formData.umur), // Convert umur to number
+          gender: formData.gender
         },
         {
           headers: {
@@ -107,15 +111,9 @@ const FormPengaduan: React.FC = () => {
         throw new Error('Invalid response format from server');
       }
     } catch (error: any) {
-      // Existing error handling
-   
-      
-      // Extract and display a more user-friendly error message
       let message = 'Terjadi kesalahan saat mengirim pengaduan. Silakan coba lagi.';
       
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
         console.log('Error data:', error.response.data);
         console.log('Error status:', error.response.status);
         
@@ -125,10 +123,8 @@ const FormPengaduan: React.FC = () => {
           message = 'Server mengalami masalah. Silakan coba lagi nanti.';
         }
       } else if (error.request) {
-        // The request was made but no response was received
         message = 'Tidak ada respons dari server. Periksa koneksi internet Anda.';
       } else {
-        // Something happened in setting up the request that triggered an Error
         message = `Error: ${error.message}`;
       }
       
@@ -267,6 +263,48 @@ const FormPengaduan: React.FC = () => {
         </div>
 
         <div className="mb-6">
+          <label htmlFor="umur" className="block text-gray-700 text-sm font-medium mb-2">
+            Umur <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaUser className="text-gray-400" />
+            </div>
+            <input
+              id="umur"
+              name="umur"
+              type="number"
+              placeholder="Masukkan umur Anda"
+              value={formData.umur}
+              onChange={handleChange}
+              required
+              min="0"
+              max="120"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="gender" className="block text-gray-700 text-sm font-medium mb-2">
+            Jenis Kelamin <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors"
+          >
+            <option value="">Pilih Jenis Kelamin</option>
+            <option value="laki-laki">Laki-laki</option>
+            <option value="perempuan">Perempuan</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div className="mb-6">
           <label htmlFor="lokasi" className="block text-gray-700 text-sm font-medium mb-2">
             Lokasi Kejadian <span className="text-red-500">*</span>
           </label>
@@ -381,6 +419,16 @@ const FormPengaduan: React.FC = () => {
           <div>
             <h4 className="text-sm font-medium text-gray-500">TANGGAL LAPORAN</h4>
             <p className="font-medium text-gray-800">{formData.tanggalLaporan}</p>
+          </div>
+          
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">UMUR</h4>
+            <p className="font-medium text-gray-800">{formData.umur} tahun</p>
+          </div>
+          
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">JENIS KELAMIN</h4>
+            <p className="font-medium text-gray-800">{formData.gender}</p>
           </div>
           
           <div>
