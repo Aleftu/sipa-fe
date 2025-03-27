@@ -1,15 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Button from './Button';
-import { FaPhoneAlt, FaHospital, FaShieldAlt, FaHandsHelping, FaUserPlus, FaExclamationTriangle } from 'react-icons/fa';
+import { FaPhoneAlt, FaHospital, FaShieldAlt, FaHandsHelping, FaUserPlus, FaExclamationTriangle, FaUser } from 'react-icons/fa';
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEmergencyOpen, setIsEmergencyOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const emergencyDropdownRef = useRef<HTMLDivElement>(null);
   const emergencyButtonRef = useRef<HTMLButtonElement>(null);
   const location = useLocation();
+
+  // Check login status on component mount and when location changes
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    const name = localStorage.getItem('userName');
+    setIsLoggedIn(!!token);
+    setUserRole(role);
+    setUserName(name);
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +64,18 @@ const Navbar: React.FC = () => {
       }
     }
     setIsMobileMenuOpen(false);
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userName');
+    setIsLoggedIn(false);
+    setUserRole(null);
+    setUserName(null);
+    // Redirect to home or login page
+    window.location.href = '/';
   };
 
   return (
@@ -123,7 +148,7 @@ const Navbar: React.FC = () => {
         )}
       </div>
 
-      {/* Navigation Bar - Keeping the original with minimal changes */}
+      {/* Navigation Bar */}
       <nav className={`fixed top-0 w-full z-40 transition-all duration-300 ${isScrolled ? 'py-3 bg-white/95 shadow-md backdrop-blur-md' : 'py-6 bg-transparent'}`}>
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
           <Link to="/" className="flex items-center">
@@ -147,20 +172,58 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Login and Registration Buttons */}
+          {/* Login and Registration or Profile Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/status-pengaduan">
               <Button variant="outline" size="sm">Status Pengaduan</Button>
             </Link>
-            <Link to="/register">
-              <Button variant="secondary" size="sm" className="flex items-center">
-                <FaUserPlus className="mr-2" />
-                Registrasi
-              </Button>
-            </Link>
-            <Link to="/login">
-              <Button variant="primary" size="sm">Login</Button>
-            </Link>
+            
+            {isLoggedIn ? (
+              <div className="flex items-center space-x-3">
+                <div className="relative group">
+                  <button className="flex items-center justify-center w-10 h-10 bg-[#8B5CF6]/10 rounded-full hover:bg-[#8B5CF6]/20 transition-colors">
+                    <FaUser className="text-[#8B5CF6] text-lg" />
+                  </button>
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 z-50 hidden group-hover:block">
+                    <div className="px-4 py-2 border-b border-gray-100 text-sm text-gray-700">
+                      {userRole === 'admin' ? 'Admin' : userName || 'Pengguna'}
+                    </div>
+                    {userRole === 'admin' && (
+                      <Link 
+                        to="/dashboard" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                      >
+                        Dashboard
+                      </Link>
+                    )}
+                    <Link 
+                      to="/profile" 
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      Profil Saya
+                    </Link>
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                    >
+                      Keluar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link to="/register">
+                  <Button variant="secondary" size="sm" className="flex items-center">
+                    <FaUserPlus className="mr-2" />
+                    Registrasi
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button variant="primary" size="sm">Login</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -180,53 +243,86 @@ const Navbar: React.FC = () => {
               )}
             </button>
           </div>
-        </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-white shadow-lg rounded-b-2xl mx-4 mt-2 py-4 px-6">
-            <Link to="/pelayanan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pelayanan</Link>
-            <Link to="/pengaduan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pengaduan</Link>
-            <Link 
-              to={isHomePage() ? '#articles-section' : '/artikel'} 
-              className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" 
-              onClick={handleArticlesClick}
-            >
-              Artikel
-            </Link>
-            <div className="flex flex-col space-y-2 mt-3 pt-3 border-t border-gray-100">
-              <Link to="/status-pengaduan" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">Status Pengaduan</Button>
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden bg-white shadow-lg rounded-b-2xl mx-4 mt-2 py-4 px-6">
+              <Link to="/pelayanan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pelayanan</Link>
+              <Link to="/pengaduan" className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" onClick={() => setIsMobileMenuOpen(false)}>Pengaduan</Link>
+              <Link 
+                to={isHomePage() ? '#articles-section' : '/artikel'} 
+                className="block py-2 text-gray-700 font-medium hover:text-[#8B5CF6]" 
+                onClick={handleArticlesClick}
+              >
+                Artikel
               </Link>
-              <Link to="/register" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="secondary" size="sm" className="w-full flex items-center justify-center">
-                  <FaUserPlus className="mr-2" />
-                  Registrasi
-                </Button>
-              </Link>
-              <Link to="/login" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="primary" size="sm" className="w-full">Login</Button>
-              </Link>
+              <div className="flex flex-col space-y-2 mt-3 pt-3 border-t border-gray-100">
+                <Link to="/status-pengaduan" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full">Status Pengaduan</Button>
+                </Link>
+                
+                {isLoggedIn ? (
+                  <>
+                    <div className="text-center text-sm text-gray-700 py-2">
+                      {userRole === 'admin' ? 'Admin' : userName || 'Pengguna'}
+                    </div>
+                    {userRole === 'admin' && (
+                      <Link to="/dashboard" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button variant="secondary" size="sm" className="w-full">Dashboard</Button>
+                      </Link>
+                    )}
+                    <Link to="/profile" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="secondary" size="sm" className="w-full">Profil Saya</Button>
+                    </Link>
+                    <Button 
+                      variant="primary" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => {
+                        handleLogout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      Keluar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/register" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="secondary" size="sm" className="w-full flex items-center justify-center">
+                        <FaUserPlus className="mr-2" />
+                        Registrasi
+                      </Button>
+                    </Link>
+                    <Link to="/login" className="w-full" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="primary" size="sm" className="w-full">Login</Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
 
       {/* More subtle animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-out forwards;
-        }
-        @keyframes subtle-pulse {
-          0% { transform: scale(1); }
-          50% { transform: scale(1.03); }
-          100% { transform: scale(1); }
-        }
-      `}</style>
+      {/* More subtle animations */}
+<style>
+{`
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+  @keyframes subtle-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+  }
+`}
+</style>
     </>
   );
 };

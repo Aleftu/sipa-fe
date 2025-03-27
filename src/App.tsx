@@ -13,6 +13,10 @@ import AnimatedCursor from './Components/Ui/Animated';
 import ArticleListPage from './Components/Home/ArticlesListPage';
 import PelayananPage from '../src/Pages/Pelayanan'
 import HalamanBantuan from '../src/Pages/Bantuan'
+import ForgotPassword from '../src/Components/Ui/LupaPassword'
+import Dashboard from '../src/Pages/AdminDasboard'
+import LaporanKorban from '../src/Components/Ui/LaporanKorban'
+import TingkatKekerasan from '../src/Components/Ui/TingkatKekerasan';
 
 const App: React.FC = () => {
   return (
@@ -31,6 +35,11 @@ const App: React.FC = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/artikel" element={<ArticleListPage />} />        <Route path="/pelayanan" element={<PelayananPage />} />
         <Route path="/bantuan" element={<HalamanBantuan />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/laporan-korban" element={<LaporanKorban />} />
+        <Route path="/tingkat-kekerasan" element={<TingkatKekerasan />} />
+        
       </Routes>
       </div>
     </Router>

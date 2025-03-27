@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 
-interface Article {
+interface ApiArticle {
   id: number;
   judul: string;
   isi: string;
   kategori: string | null;
   image?: string;
-  readTime?: string;
-  date?: string;
+  readTime?: string | null;
+  date?: string | null;
 }
 
 interface ArticleCardProps {
-  article: Article;
+  article: ApiArticle;
   index: number;
 }
 
@@ -79,7 +79,7 @@ const ArticlesCard: React.FC<ArticleCardProps> = ({ article, index }) => {
 };
 
 const Articles: React.FC = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<ApiArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -87,14 +87,14 @@ const Articles: React.FC = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://api-sipa-capstone-production.up.railway.app/artikel');
+        const response = await axios.get<ApiArticle[]>('https://api-sipa-capstone-production.up.railway.app/artikel');
         
         // Map API response to match our Article interface
-        const mappedArticles = response.data.map((article: any) => ({
+        const mappedArticles = response.data.map((article: ApiArticle) => ({
           ...article,
-          image: '/assets/tokdalang.jpg', // Add fallback image
-          readTime: null,
-          date: null
+          image: article.image || '/assets/tokdalang.jpg',
+          readTime: article.readTime || null,
+          date: article.date || null
         }));
         
         setArticles(mappedArticles);
@@ -105,10 +105,9 @@ const Articles: React.FC = () => {
         console.error('Error fetching articles:', err);
       }
     };
-
+  
     fetchArticles();
   }, []);
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">

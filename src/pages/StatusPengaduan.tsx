@@ -12,7 +12,8 @@ import {
   FaFileAlt,
   FaClipboardList,
   FaTools,
-  FaCalendarCheck
+  FaCalendarCheck,
+  FaInfoCircle
 } from 'react-icons/fa';
 import Navbar from '../Components/Ui/Navbar';
 import Footer from '../Components/Ui/Footer';
@@ -39,7 +40,6 @@ const StatusPengaduan: React.FC = () => {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [statusData, setStatusData] = useState<StatusPengaduanData | null>(null);
   const [error, setError] = useState('');
-
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -240,7 +240,7 @@ const StatusPengaduan: React.FC = () => {
                 transition={{ duration: 0.5 }}
                 className="px-6 py-6 sm:px-10"
               >
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
+               <div className="border border-gray-200 rounded-xl overflow-hidden">
                   {/* Status Header */}
                   <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
                     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -262,7 +262,18 @@ const StatusPengaduan: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  
+                   {/* Status Keterangan */}
+                   {statusData.status_pengaduan.keterangan && (
+                    <div className="bg-blue-50 px-6 py-4 border-b border-gray-200 flex items-center">
+                      <FaInfoCircle className="mr-3 text-blue-600" />
+                      <div>
+                        <h3 className="font-semibold text-blue-800 text-sm">Keterangan Status</h3>
+                        <p className="text-blue-700 text-sm">
+                          {statusData.status_pengaduan.keterangan}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   {/* Details */}
                   <div className="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

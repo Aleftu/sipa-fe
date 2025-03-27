@@ -1,7 +1,23 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Components/Ui/Button';
+import Loading from '../Components/Ui/Loading';
+
+// Define User and LoginResponse types
+interface User {
+  email: string;
+  role: 'admin' | 'user';
+  token: string;
+}
+
+interface LoginResponse {
+  user?: User;
+  token?: string;
+  role?: 'admin' | 'user';
+  message?: string;
+}
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,18 +25,72 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setShowErrorPopup(false);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response: AxiosResponse<LoginResponse> = await axios.post(
+        "https://api-sipa-capstone-production.up.railway.app/login", 
+        { email, password }
+      );
+  
+      const data = response.data;
+      
+      // Ensure data.user and data.token exist before setting
+      if (data.user && data.token) {
+        const userData: User = {
+          email: data.user.email || email,
+          role: data.user.role || 'user',
+          token: data.token
+        };
+
+        setUser(userData);
+        
+        // Store user data in localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", userData.role);
+        
+        // Show success popup
+        setShowSuccessPopup(true);
+        
+        // Automatically navigate after a short delay
+        setTimeout(() => {
+          setShowSuccessPopup(false);
+          if (userData.role === "admin") {
+            navigate("/dashboard");
+          } else {
+            navigate("/");
+          }
+        }, 2000);
+      } else {
+        throw new Error(data.message || "Login gagal");
+      }
+    } catch (error) {
+      // Type-safe error handling
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError<LoginResponse>;
+        const errorMsg = 
+          axiosError.response?.data?.message || 
+          axiosError.message || 
+          "Login gagal";
+        
+        setErrorMessage(errorMsg);
+        setShowErrorPopup(true);
+      } else {
+        setErrorMessage("Terjadi kesalahan tidak terduga");
+        setShowErrorPopup(true);
+      }
+    } finally {
       setIsLoading(false);
-      // Handle login logic here
-      console.log('Login attempt with:', { email, password, rememberMe });
-    }, 1500);
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -29,7 +99,67 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0E7FF] via-[#EAD6FF] to-[#F5EBFF] flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Back to Home button */}
+      {/* Success Popup */}
+      <AnimatePresence>
+        {showSuccessPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed top-4 right-4 z-50"
+          >
+            <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-xl flex items-center">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-6 w-6 mr-2" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M5 13l4 4L19 7" 
+                />
+              </svg>
+              Login Berhasil!
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error Popup */}
+      <AnimatePresence>
+        {showErrorPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed top-4 right-4 z-50"
+          >
+            <div className="bg-red-500 text-white px-6 py-4 rounded-lg shadow-xl flex items-center">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-6 w-6 mr-2" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
+                />
+              </svg>
+              {errorMessage}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Rest of the existing login page code remains the same */}
       <div className="absolute top-4 left-4 z-20">
         <Button 
           variant="secondary" 
@@ -44,15 +174,7 @@ const Login: React.FC = () => {
           Kembali ke Beranda
         </Button>
       </div>
-      
-      {/* Decorative elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-20 w-4 h-4 bg-[#C084FC] rounded-full animate-pulse"></div>
-        <div className="absolute top-1/3 right-1/4 w-6 h-6 bg-[#A78BFA] rounded-full animate-pulse opacity-40"></div>
-        <div className="absolute bottom-20 right-20 w-5 h-5 bg-[#FF8C00] rounded-full animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/5 w-7 h-7 bg-[#DDD6FE] rounded-full animate-pulse opacity-60"></div>
-      </div>
-      
+      {/* Rest of the existing login page code */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -81,7 +203,7 @@ const Login: React.FC = () => {
                 </Link>
               </p>
             </div>
-            
+            {isLoading && <Loading />}
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
