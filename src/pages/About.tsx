@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import Navbar from '../Components/Ui/Navbar';
 import Footer from '../Components/Ui/Footer';
 import BackToTop from '../Components/Ui/BackToTop';
@@ -393,8 +394,12 @@ const LearnMore: React.FC = () => {
             Jadilah bagian dari perubahan. Laporkan tindak kekerasan dan bantu menciptakan lingkungan yang lebih aman untuk ibu dan anak di Indonesia.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link to="/pengaduan">
             <Button variant="outline">Buat Pengaduan Sekarang</Button>
+            </Link>
+            <Link to="/hotline">
             <Button variant="outline">Hubungi Hotline</Button>
+            </Link>
           </div>
         </motion.div>
       </section>

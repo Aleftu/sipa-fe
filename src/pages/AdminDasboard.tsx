@@ -1,68 +1,168 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom"; 
-import Sidebar from "../components/Ui/D.Admin"; 
-import StatusLaporan from "../components/Ui/StatusLaporan";
-import TingkatKekerasan from "../components/Ui/TingkatKekerasan";
-import FormLaporan from "../components/Ui/LaporanKorban";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Sidebar from "../Components/Ui/D.Admin";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import axios from 'axios';
 
+// Define interfaces
+interface ReportData {
+    id: number;
+    tanggal: string;
+    status_pengaduan: {
+        status: string;
+    };
+}
+
+interface MonthlyReportStats {
+    bulan: string;
+    jumlah: number;
+}
+
+interface User {
+    id: number;
+    email: string;
+    role: string;
+}
 
 const Dashboard: React.FC = () => {
-    const navigate = useNavigate(); 
-    const [selectedMenu, setSelectedMenu] = useState<string>("laporan"); // State untuk menyimpan menu aktif
+    const navigate = useNavigate();
+    const [adminName, setAdminName] = useState<string>("Admin");
+    const [reportStats, setReportStats] = useState<MonthlyReportStats[]>([]);
 
-    // useEffect(() => {
-    //     const role = localStorage.getItem("role");
-    //     if (role === "admin") {
-    //         navigate("/dashboard");
-    //     }
-    // }, [navigate]);
+    // Function to process reports and group by month
+    const processReportStats = (reports: ReportData[]): MonthlyReportStats[] => {
+        // Create a map to store monthly report counts
+        const monthReports = new Map<string, number>();
 
-    // Fungsi untuk kembali ke beranda
-    const handleBackHome = () => {
-        navigate("/"); 
+        // Process each report
+        reports.forEach(report => {
+            // Convert the date to a Date object
+            const reportDate = new Date(report.tanggal);
+            
+            // Format month as "MMM YYYY" (e.g., "Mar 2025")
+            const monthKey = reportDate.toLocaleString('default', { 
+                month: 'short', 
+                year: 'numeric' 
+            });
+
+            // Increment the count for this month
+            monthReports.set(monthKey, (monthReports.get(monthKey) || 0) + 1);
+        });
+
+        // Convert map to array of MonthlyReportStats
+        return Array.from(monthReports, ([bulan, jumlah]) => ({ bulan, jumlah }))
+            .sort((a, b) => {
+                // Sort chronologically
+                const dateA = new Date(a.bulan);
+                const dateB = new Date(b.bulan);
+                return dateA.getTime() - dateB.getTime();
+            });
     };
 
+    useEffect(() => {
+        // Check authentication
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
+        // Retrieve user information from localStorage
+        const userInfoString = localStorage.getItem("userInfo");
+        if (userInfoString) {
+            try {
+                const user: User = JSON.parse(userInfoString);
+                // Use the part before @ as the name, or full email if no @ found
+                const displayName = user.email.includes('@') 
+                    ? user.email.split('@')[0] 
+                    : user.email;
+                setAdminName(displayName);
+            } catch (error) {
+                console.error("Error parsing user info:", error);
+            }
+        }
+
+        // Fetch report statistics
+        const fetchReportStats = async () => {
+            try {
+                const response = await axios.get<ReportData[]>(
+                    'https://api-sipa-capstone-production.up.railway.app/data-pengaduan',
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+                
+                // Process and set report statistics
+                const processedStats = processReportStats(response.data);
+                setReportStats(processedStats);
+            } catch (error) {
+                console.error('Error fetching report statistics:', error);
+                if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    localStorage.clear();
+                    navigate("/login");
+                }
+            }
+        };
+
+        fetchReportStats();
+    }, [navigate]);
+
     return (
-        <div className="flex h-screen">
-            {/* Sidebar dengan onMenuClick untuk mengubah konten */}
-            <Sidebar onMenuClick={setSelectedMenu} />
+        <div className="flex min-h-screen bg-gray-100">
+            <Sidebar />
 
-            {/* Konten utama */}
-            <div className="flex-1 p-4 relative bg-purple-200">
-                {/* Tombol kembali di kanan atas */}
-                <div className="flex justify-end">
-                    <button 
-                        onClick={handleBackHome}
-                        className="flex items-center text-[#8B5CF6] hover:text-[#7C3AED] transition-colors font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Kembali ke Beranda
-                    </button>
+            <div className="flex-1 p-4 md:p-8 lg:p-12 overflow-auto">
+                <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-800">
+                        Selamat Datang, {adminName}
+                    </h1>
+                    <p className="text-gray-600 mt-2">
+                        Dashboard Pusat Informasi Perlindungan Anak
+                    </p>
                 </div>
-                
-                {/* Header Dashboard */}
-                <div className="mt-6"> 
-                    <h1 className="text-2xl font-semibold">Dashboard</h1>
-                    <hr className="w-36 border-black mt-2 border-t-2" />
-                </div>
-                
 
-                {/* Konten dinamis berdasarkan menu yang dipilih */}
-                <div className="mt-6">
-                    {selectedMenu === "laporan" && (
-                        <>
-                        <button className="mb-1 mx-3 px-4 py-2 mt-7 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                            Status Laporan
-                        </button>
-                        <StatusLaporan />
-                    </> 
-                     )}
-                    {selectedMenu === "tingkat" && <TingkatKekerasan />}
-                    {selectedMenu === "laporan" && <FormLaporan />}
-                    {selectedMenu === "tingkat" && <div>Laporan Tingkat Kekerasan</div>}
-                    {selectedMenu === "status" && <FormLaporan />}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                        Statistik Laporan Masuk
+                    </h2>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={reportStats}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="bulan" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="jumlah" fill="#8884d8" name="Jumlah Laporan" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                    <Link 
+                        to="/laporan-korban" 
+                        className="bg-white rounded-xl shadow-lg p-6 hover:bg-gray-50 transition flex flex-col items-center"
+                    >
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            Laporan Korban
+                        </h3>
+                        <p className="text-gray-600 text-center">
+                            Lihat dan kelola laporan yang masuk
+                        </p>
+                    </Link>
+
+                    <Link 
+                        to="/tingkat-kekerasan" 
+                        className="bg-white rounded-xl shadow-lg p-6 hover:bg-gray-50 transition flex flex-col items-center"
+                    >
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                            Tingkat Kekerasan
+                        </h3>
+                        <p className="text-gray-600 text-center">
+                            Analisis dan dokumentasi tingkat kekerasan
+                        </p>
+                    </Link>
                 </div>
             </div>
         </div>

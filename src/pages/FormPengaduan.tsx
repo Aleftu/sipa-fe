@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch, FaUser } from 'react-icons/fa';
+import axios from 'axios';
 import Button from '../Components/Ui/Button';
 import Navbar from '../Components/Ui/Navbar';
 import Footer from '../Components/Ui/Footer';
@@ -13,26 +14,39 @@ const FormPengaduan: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [responseData, setResponseData] = useState<any>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   
-  const [formData, setFormData] = useState({
-    kodePelapor: generateKodePelapor(),
-    lokasiKejadian: '',
-    kronologi: '',
-    bukti: null as File | null,
-    buktiPreview: '',
-    tanggalLaporan: new Date().toLocaleDateString('id-ID', {
+  // Function to get current date formatted in Indonesian
+  const getCurrentDate = () => {
+    const now = new Date();
+    // Use Indonesian locale with full date formatting
+    return now.toLocaleDateString('id-ID', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
-    })
+    }) || new Date().toLocaleDateString(); // Fallback if something goes wrong
+  };
+  
+  const [formData, setFormData] = useState({
+    lokasi: '',
+    kronologi: '',
+    bukti: null as File | null,
+    buktiPreview: '',
+    tanggalLaporan: getCurrentDate(),
+    umur: '',
+    gender: ''
   });
   
-  // Generate a random 6-digit code
-  function generateKodePelapor() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-  }
+  // Update date whenever component is mounted or re-rendered
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      tanggalLaporan: getCurrentDate()
+    }));
+  }, []);
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -54,7 +68,7 @@ const FormPengaduan: React.FC = () => {
     }
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (step < 3) {
@@ -63,12 +77,61 @@ const FormPengaduan: React.FC = () => {
     }
     
     setIsSubmitting(true);
+    setErrorMessage('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Create a new Date object and convert to specific format
+      const currentDate = new Date().toISOString().split('T')[0];
+      
+      const response = await axios.post(
+        'https://api-sipa-capstone-production.up.railway.app/pengaduan',
+        {
+          lokasi: formData.lokasi,
+          kronologi: formData.kronologi,
+          tanggalLaporan: currentDate,
+          tanggal: currentDate,
+          bukti: '', // Send an empty string if no file is selected
+          umur: parseInt(formData.umur), // Convert umur to number
+          gender: formData.gender
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log('API Response:', response.data);
+      
+      // Store the response data for display
+      if (response.data && response.data.pengaduan) {
+        setResponseData(response.data.pengaduan);
+        setIsSuccess(true);
+      } else {
+        throw new Error('Invalid response format from server');
+      }
+    } catch (error: any) {
+      let message = 'Terjadi kesalahan saat mengirim pengaduan. Silakan coba lagi.';
+      
+      if (error.response) {
+        console.log('Error data:', error.response.data);
+        console.log('Error status:', error.response.status);
+        
+        if (error.response.data && error.response.data.message) {
+          message = `Error: ${error.response.data.message}`;
+        } else if (error.response.status === 500) {
+          message = 'Server mengalami masalah. Silakan coba lagi nanti.';
+        }
+      } else if (error.request) {
+        message = 'Tidak ada respons dari server. Periksa koneksi internet Anda.';
+      } else {
+        message = `Error: ${error.message}`;
+      }
+      
+      setErrorMessage(message);
+    } finally {
       setIsSubmitting(false);
-      setIsSuccess(true);
-    }, 1500);
+    }
   };
   
   const handlePrevStep = () => {
@@ -76,7 +139,8 @@ const FormPengaduan: React.FC = () => {
   };
   
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(formData.kodePelapor);
+    const kodePengaduan = responseData?.kode || '';
+    navigator.clipboard.writeText(kodePengaduan);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -133,7 +197,7 @@ const FormPengaduan: React.FC = () => {
         <div className="mb-8">
           <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 flex items-center justify-between max-w-xs mx-auto">
             <span className="text-2xl font-mono font-bold text-purple-700 tracking-wider">
-              {formData.kodePelapor}
+              {responseData?.kode || ''}
             </span>
             <button 
               onClick={copyToClipboard}
@@ -175,24 +239,73 @@ const FormPengaduan: React.FC = () => {
     return (
       <>
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-2">
-            Kode Pelapor
+          <label htmlFor="tanggalLaporan" className="block text-gray-700 text-sm font-medium mb-2">
+            Tanggal Laporan
           </label>
-          <div className="flex">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+              </svg>
+            </div>
             <input
+              id="tanggalLaporan"
+              name="tanggalLaporan"
               type="text"
-              value={formData.kodePelapor}
-              className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors cursor-not-allowed"
-              disabled
+              value={formData.tanggalLaporan}
+              readOnly
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700"
             />
           </div>
           <p className="mt-1 text-sm text-gray-500">
-            Kode ini digenerate otomatis dan akan menjadi ID laporan Anda
+            Tanggal laporan diisi otomatis dengan tanggal hari ini
           </p>
         </div>
 
         <div className="mb-6">
-          <label htmlFor="lokasiKejadian" className="block text-gray-700 text-sm font-medium mb-2">
+          <label htmlFor="umur" className="block text-gray-700 text-sm font-medium mb-2">
+            Umur <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FaUser className="text-gray-400" />
+            </div>
+            <input
+              id="umur"
+              name="umur"
+              type="number"
+              placeholder="Masukkan umur Anda"
+              value={formData.umur}
+              onChange={handleChange}
+              required
+              min="0"
+              max="120"
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="gender" className="block text-gray-700 text-sm font-medium mb-2">
+            Jenis Kelamin <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors"
+          >
+            <option value="">Pilih Jenis Kelamin</option>
+            <option value="laki-laki">Laki-laki</option>
+            <option value="perempuan">Perempuan</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="lokasi" className="block text-gray-700 text-sm font-medium mb-2">
             Lokasi Kejadian <span className="text-red-500">*</span>
           </label>
           <div className="relative">
@@ -200,11 +313,11 @@ const FormPengaduan: React.FC = () => {
               <FaMapMarkerAlt className="text-gray-400" />
             </div>
             <input
-              id="lokasiKejadian"
-              name="lokasiKejadian"
+              id="lokasi"
+              name="lokasi"
               type="text"
               placeholder="Masukkan alamat lengkap kejadian"
-              value={formData.lokasiKejadian}
+              value={formData.lokasi}
               onChange={handleChange}
               required
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 transition-colors"
@@ -302,20 +415,25 @@ const FormPengaduan: React.FC = () => {
           </p>
         </div>
         
-        <div className="px-6 py-4 space-y-4">
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">KODE PELAPOR</h4>
-            <p className="font-medium text-gray-800">{formData.kodePelapor}</p>
-          </div>
-          
+        <div className="px-6 py-4 space-y-4">          
           <div>
             <h4 className="text-sm font-medium text-gray-500">TANGGAL LAPORAN</h4>
             <p className="font-medium text-gray-800">{formData.tanggalLaporan}</p>
           </div>
           
           <div>
+            <h4 className="text-sm font-medium text-gray-500">UMUR</h4>
+            <p className="font-medium text-gray-800">{formData.umur} tahun</p>
+          </div>
+          
+          <div>
+            <h4 className="text-sm font-medium text-gray-500">JENIS KELAMIN</h4>
+            <p className="font-medium text-gray-800">{formData.gender}</p>
+          </div>
+          
+          <div>
             <h4 className="text-sm font-medium text-gray-500">LOKASI KEJADIAN</h4>
-            <p className="font-medium text-gray-800">{formData.lokasiKejadian}</p>
+            <p className="font-medium text-gray-800">{formData.lokasi}</p>
           </div>
           
           <div>
@@ -373,6 +491,12 @@ const FormPengaduan: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit}>
                   {renderProgress()}
+                  
+                  {errorMessage && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-lg">
+                      <p className="text-red-600 text-sm">{errorMessage}</p>
+                    </div>
+                  )}
                   
                   {step === 1 && renderStep1()}
                   {step === 2 && renderStep2()}

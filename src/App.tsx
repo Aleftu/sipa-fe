@@ -11,8 +11,12 @@ import FormPengaduan from '../src/Pages/FormPengaduan'
 import Terms from '../src/Components/Home/Terms'
 import Privacy from '../src/Components/Home/Privacy'
 import AnimatedCursor from './Components/Ui/Animated';
-import ArticlesPage from '../src/Components/Home/ArticlesSection'; // Import the full Articles page
-import Dashboard from '../src/pages/AdminDasboard'
+import ArticleListPage from './Components/Home/ArticlesListPage';
+import PelayananPage from '../src/Pages/Pelayanan'
+import HalamanBantuan from '../src/Pages/Bantuan'
+import Dashboard from '../src/Pages/AdminDasboard'
+import LaporanKorban from '../src/Components/Ui/LaporanKorban'
+import TingkatKekerasan from '../src/Components/Ui/TingkatKekerasan';
 
 const App: React.FC = () => {
   return (
@@ -30,8 +34,15 @@ const App: React.FC = () => {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/artikel" element={<ArticlesPage />} />
+
+        <Route path="/artikel" element={<ArticleListPage />} />        
+        <Route path="/pelayanan" element={<PelayananPage />} />
+        <Route path="/bantuan" element={<HalamanBantuan />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/laporan-korban" element={<LaporanKorban />} />
+        <Route path="/tingkat-kekerasan" element={<TingkatKekerasan />} />
+        
       </Routes>
       </div>
     </Router>
