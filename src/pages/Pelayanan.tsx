@@ -17,36 +17,55 @@ const suggestedPhrases = [
 const profanityList = ["anjing", "babi", "bangsat", "bajingan", "keparat", "tolol", "bodoh", "goblok"];
 
 const PelayananPage: React.FC = () => {
+  // Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginWarning, setShowLoginWarning] = useState(false);
+
+  // Chat states
   const [messages, setMessages] = useState<{text: string, sender: 'user' | 'bot', timestamp: Date}[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showEndDialog, setShowEndDialog] = useState(false);
   const [isProfanityDetected, setIsProfanityDetected] = useState(false);
   const [chatStarted, setChatStarted] = useState(false);
-  const [autoScroll, setAutoScroll] = useState(true); // New state to control auto-scrolling
+  const [autoScroll, setAutoScroll] = useState(true);
+  const [showThankYouMessage, setShowThankYouMessage] = useState(false);
+
+  // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [showThankYouMessage, setShowThankYouMessage] = useState(false);
-  // Modified scroll behavior - only scroll if autoScroll is enabled
-  // Update the scroll detection logic
-useEffect(() => {
-  const handleScroll = () => {
-    if (chatContainerRef.current) {
-      const container = chatContainerRef.current;
-      const distanceFromBottom = 
-        container.scrollHeight - container.clientHeight - container.scrollTop;
-      
-      // Only set autoScroll to true if very close to bottom (within 20px)
-      setAutoScroll(distanceFromBottom < 20);
-    }
-  };
 
-  const container = chatContainerRef.current;
-  if (container) {
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }
-}, []);
+  // Check authentication on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+    
+    if (token && role) {
+      setIsAuthenticated(true);
+    } else {
+      setShowLoginWarning(true);
+    }
+  }, []);
+
+  // Scroll detection effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (chatContainerRef.current) {
+        const container = chatContainerRef.current;
+        const distanceFromBottom = 
+          container.scrollHeight - container.clientHeight - container.scrollTop;
+        
+        // Only set autoScroll to true if very close to bottom (within 20px)
+        setAutoScroll(distanceFromBottom < 20);
+      }
+    };
+
+    const container = chatContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   // Start the chat with initial message
   const startChat = () => {
@@ -146,6 +165,42 @@ useEffect(() => {
     }
   };
 
+  // If not authenticated, show login warning
+  if (showLoginWarning) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+            <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaExclamationTriangle className="text-red-500 text-4xl" />
+            </div>
+            <h2 className="text-2xl font-bold text-red-600 mb-4">Akses Dibatasi</h2>
+            <p className="text-gray-700 mb-6">
+              Anda harus login terlebih dahulu untuk mengakses Layanan SIPA. 
+              Silakan login untuk melanjutkan.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <Button 
+                variant="outline" 
+                onClick={() => window.location.href = '/'}
+              >
+                Kembali ke Beranda
+              </Button>
+              <Button 
+                variant="primary" 
+                onClick={() => window.location.href = '/login'}
+              >
+                Login Sekarang
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
@@ -219,7 +274,7 @@ useEffect(() => {
                 </div>
               ) : (
                 <>
-                  {/* Chat Messages Section (shown after chat starts) */}
+                  {/* Chat Messages Section */}
                   <div 
                     className="h-96 overflow-y-auto p-4 bg-gray-50 relative" 
                     ref={chatContainerRef}
@@ -296,18 +351,18 @@ useEffect(() => {
                     )}
                     <div ref={messagesEndRef} />
                     
-                    {/* Scroll to bottom button - shows when not at bottom */}
+                    {/* Scroll to bottom button */}
                     {!autoScroll && messages.length > 3 && (
-  <button 
-    onClick={scrollToBottom}
-    className="absolute bottom-4 right-4 bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-purple-600 transition-colors duration-200 animate-pulse z-10"
-    title="Scroll ke bawah"
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-      <path fillRule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L10 14.586l5.293-5.293a1 1 0 011.414 0z" clipRule="evenodd" />
-    </svg>
-  </button>
-)}
+                      <button 
+                        onClick={scrollToBottom}
+                        className="absolute bottom-4 right-4 bg-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-purple-600 transition-colors duration-200 animate-pulse z-10"
+                        title="Scroll ke bawah"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L10 14.586l5.293-5.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    )}
                   </div>
                 </>
               )}
@@ -320,40 +375,40 @@ useEffect(() => {
                     Mohon gunakan bahasa yang sopan dan tidak mengandung kata-kata kasar
                   </div>
                 )}
-                <div className="flex gap-2"> {/* Added gap-2 here for spacing */}
-  <div className="flex-1 relative">
-    <textarea
-      value={newMessage}
-      onChange={(e) => setNewMessage(e.target.value)}
-      onKeyPress={handleKeyPress}
-      placeholder="Tulis pesan Anda di sini..."
-      className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
-      rows={1}
-    />
-    <button 
-      className="absolute right-2 top-3 text-gray-400 hover:text-purple-400 transition-colors"
-      onClick={() => setNewMessage('')}
-      title="Hapus pesan"
-    >
-      {newMessage && <FaTimes />}
-    </button>
-  </div>
-  <button
-    onClick={handleSendMessage}
-    disabled={!newMessage.trim()}
-    className={`
-      bg-purple-500 text-white 
-      w-12 h-12 rounded-full
-      flex items-center justify-center
-      transition-all duration-200
-      ${!newMessage.trim() 
-        ? 'opacity-50 cursor-not-allowed' 
-        : 'hover:bg-purple-600 shadow-md'
-      }
-    `}
-  >
-    <FaPaperPlane className="text-lg" />
-  </button>
+                <div className="flex gap-2">
+                  <div className="flex-1 relative">
+                    <textarea
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Tulis pesan Anda di sini..."
+                      className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent resize-none"
+                      rows={1}
+                    />
+                    <button 
+                      className="absolute right-2 top-3 text-gray-400 hover:text-purple-400 transition-colors"
+                      onClick={() => setNewMessage('')}
+                      title="Hapus pesan"
+                    >
+                      {newMessage && <FaTimes />}
+                    </button>
+                  </div>
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!newMessage.trim()}
+                    className={`
+                      bg-purple-500 text-white 
+                      w-12 h-12 rounded-full
+                      flex items-center justify-center
+                      transition-all duration-200
+                      ${!newMessage.trim() 
+                        ? 'opacity-50 cursor-not-allowed' 
+                        : 'hover:bg-purple-600 shadow-md'
+                      }
+                    `}
+                  >
+                    <FaPaperPlane className="text-lg" />
+                  </button>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   <FaRegSmile className="inline mr-1" /> 
@@ -366,74 +421,72 @@ useEffect(() => {
       </div>
       
       {/* End Chat Confirmation Dialog */}
-     {/* End Chat Confirmation Dialog */}
-{showEndDialog && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
-    <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 animate-zoomIn">
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FaExclamationTriangle className="text-red-500 text-2xl" />
+      {showEndDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6 animate-zoomIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FaExclamationTriangle className="text-red-500 text-2xl" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800">Akhiri Percakapan?</h3>
+              <p className="text-gray-600 mt-2">
+                Jika Anda mengakhiri percakapan ini, riwayat chat akan dihapus. Apakah Anda yakin ingin mengakhiri?
+              </p>
+            </div>
+            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 hover:bg-gray-100 transition-colors duration-200"
+                onClick={() => setShowEndDialog(false)}
+              >
+                Kembali ke Chat
+              </Button>
+              <Button 
+                variant="danger" 
+                className="flex-1 bg-red-500 hover:bg-red-600 transition-colors duration-200 shadow-sm font-medium"
+                onClick={() => {
+                  setShowEndDialog(false);
+                  setMessages([]);
+                  setChatStarted(false);
+                  setShowThankYouMessage(true);
+                  setTimeout(() => setShowThankYouMessage(false), 5000);
+                }}
+              >
+                Akhiri Percakapan
+              </Button>
+            </div>
+          </div>
         </div>
-        <h3 className="text-xl font-bold text-gray-800">Akhiri Percakapan?</h3>
-        <p className="text-gray-600 mt-2">
-          Jika Anda mengakhiri percakapan ini, riwayat chat akan dihapus. Apakah Anda yakin ingin mengakhiri?
-        </p>
-      </div>
-      <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
-        <Button 
-          variant="outline" 
-          className="flex-1 hover:bg-gray-100 transition-colors duration-200"
-          onClick={() => setShowEndDialog(false)}
-        >
-          Kembali ke Chat
-        </Button>
-        <Button 
-          variant="danger" 
-          className="flex-1 bg-red-500 hover:bg-red-600 transition-colors duration-200 shadow-sm font-medium"
-          onClick={() => {
-            setShowEndDialog(false);
-            setMessages([]);
-            setChatStarted(false);
-            setShowThankYouMessage(true);
-            setTimeout(() => setShowThankYouMessage(false), 5000);
-          }}
-        >
-          Akhiri Percakapan
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
-{/* Thank You Message */}
-{/* Thank You Message */}
-{showThankYouMessage && (
-  <div className="fixed inset-0 bg-purple-500 bg-opacity-95 flex items-center justify-center z-50 p-4 animate-fadeIn">
-    <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center animate-zoomIn">
-      <div className="w-20 h-20 mx-auto mb-6 relative">
-        <div className="absolute inset-0 bg-purple-100 rounded-full animate-ping opacity-75"></div>
-        <div className="relative w-full h-full bg-purple-200 rounded-full flex items-center justify-center">
-          <FaUserShield className="text-purple-600 text-4xl" />
+      {/* Thank You Message */}
+      {showThankYouMessage && (
+        <div className="fixed inset-0 bg-purple-500 bg-opacity-95 flex items-center justify-center z-50 p-4 animate-fadeIn">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center animate-zoomIn">
+            <div className="w-20 h-20 mx-auto mb-6 relative">
+              <div className="absolute inset-0 bg-purple-100 rounded-full animate-ping opacity-75"></div>
+              <div className="relative w-full h-full bg-purple-200 rounded-full flex items-center justify-center">
+                <FaUserShield className="text-purple-600 text-4xl" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-purple-600 mb-4">Terima Kasih!</h2>
+            <p className="text-gray-700 mb-6">
+              Terima kasih telah menggunakan Layanan Bantuan SIPA. Kami harap kami dapat membantu Anda. 
+              Jika Anda membutuhkan bantuan lagi, jangan ragu untuk menghubungi kami kembali.
+            </p>
+            <div className="flex justify-center">
+              <a href="/">
+                <Button 
+                  variant="primary" 
+                  className="bg-purple-500 hover:bg-purple-600 transition-colors duration-200 px-6 py-3"
+                >
+                  Kembali ke Beranda
+                </Button>
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-      <h2 className="text-2xl font-bold text-purple-600 mb-4">Terima Kasih!</h2>
-      <p className="text-gray-700 mb-6">
-        Terima kasih telah menggunakan Layanan Bantuan SIPA. Kami harap kami dapat membantu Anda. 
-        Jika Anda membutuhkan bantuan lagi, jangan ragu untuk menghubungi kami kembali.
-      </p>
-      <div className="flex justify-center">
-        <a href="/">
-          <Button 
-            variant="primary" 
-            className="bg-purple-500 hover:bg-purple-600 transition-colors duration-200 px-6 py-3"
-          >
-            Kembali ke Beranda
-          </Button>
-        </a>
-      </div>
-    </div>
-  </div>
-)}
+      )}
       
       <Footer />
     </>
