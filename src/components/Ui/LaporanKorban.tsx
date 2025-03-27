@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Eye, Edit2, CheckCircle, XCircle } from 'lucide-react';
-import Sidebar from '../Ui/D.Admin';
+import Sidebar from './D.Admin';
 
 interface StatusPengaduan {
     id: number;
