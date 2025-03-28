@@ -14,7 +14,11 @@ interface User {
     role: string;
 }
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    onMenuClick?: (menu: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [adminEmail, setAdminEmail] = useState<string>("admin@gmail.com");
     const navigate = useNavigate();
@@ -39,6 +43,12 @@ const Sidebar: React.FC = () => {
 
     const handleMenuClick = (path: string) => {
         navigate(path);
+        
+        // Trigger onMenuClick if provided
+        if (onMenuClick) {
+            const menu = path.substring(1); // Remove leading slash
+            onMenuClick(menu);
+        }
         
         // Close sidebar on mobile after selection
         if (window.innerWidth < 768) {

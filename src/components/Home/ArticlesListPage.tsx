@@ -4,14 +4,22 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import BackToTop from '../Ui/BackToTop'; // Adjust the import path as needed
 
+// Define a more explicit type for the API response
+interface RawArticleData {
+  id: number;
+  judul: string;
+  isi: string;
+  kategori: string | null;
+}
+
 interface Article {
   id: number;
   judul: string;
   isi: string;
   kategori: string | null;
-  image?: string;
-  readTime?: string;
-  date?: string;
+  image: string;
+  readTime: string | null;
+  date: string | null;
 }
 
 const ArticleListPage: React.FC = () => {
@@ -31,9 +39,9 @@ const ArticleListPage: React.FC = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://api-sipa-capstone-production.up.railway.app/artikel');
+        const response = await axios.get<RawArticleData[]>('https://api-sipa-capstone-production.up.railway.app/artikel');
         
-        const mappedArticles = response.data.map((article: any) => ({
+        const mappedArticles: Article[] = response.data.map((article: RawArticleData) => ({
           ...article,
           image: '/assets/tokdalang.jpg',
           readTime: null,
