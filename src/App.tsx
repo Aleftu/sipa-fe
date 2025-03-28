@@ -14,7 +14,7 @@ import AnimatedCursor from './Components/Ui/Animated';
 import ArticleListPage from './Components/Home/ArticlesListPage';
 import PelayananPage from './Pages/Pelayanan'
 import HalamanBantuan from './Pages/Bantuan'
-import Dashboard from './Pages/AdminDasboard'
+import Dashboard from './Pages/AdminDashboard'
 import LaporanKorban from './Components/Ui/LaporanKorban'
 import TingkatKekerasan from './Components/Ui/TingkatKekerasan';
 
