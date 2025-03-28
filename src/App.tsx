@@ -1,22 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from '../src/Pages/Home';
-import LearnMore from '../src/Pages/About';
-import Login from '../src/Pages/Login'
-import ForgotPassword from '../src/Pages/LupaPassword';
-import Register from '../src/Pages/Registrasi';
-import StatusPengaduan from '../src/Pages/StatusPengaduan'
-import TeamPage from '../src/Pages/TimCapstone'
-import FormPengaduan from '../src/Pages/FormPengaduan'
-import Terms from '../src/Components/Home/Terms'
-import Privacy from '../src/Components/Home/Privacy'
+import LandingPage from './Pages/Home';
+import LearnMore from './Pages/About';
+import Login from './Pages/Login'
+import ForgotPassword from './Pages/LupaPassword';
+import Register from './Pages/Registrasi';
+import StatusPengaduan from './Pages/StatusPengaduan'
+import TeamPage from './Pages/TimCapstone'
+import FormPengaduan from './Pages/FormPengaduan'
+import Terms from './Components/Home/Terms'
+import Privacy from './Components/Home/Privacy'
 import AnimatedCursor from './Components/Ui/Animated';
 import ArticleListPage from './Components/Home/ArticlesListPage';
-import PelayananPage from '../src/Pages/Pelayanan'
-import HalamanBantuan from '../src/Pages/Bantuan'
-import Dashboard from '../src/Pages/AdminDasboard'
-import LaporanKorban from '../src/Components/Ui/LaporanKorban'
-import TingkatKekerasan from '../src/Components/Ui/TingkatKekerasan';
+import PelayananPage from './Pages/Pelayanan'
+import HalamanBantuan from './Pages/Bantuan'
+import Dashboard from './Pages/AdminDasboard'
+import LaporanKorban from './Components/Ui/LaporanKorban'
+import TingkatKekerasan from './Components/Ui/TingkatKekerasan';
 
 const App: React.FC = () => {
   return (

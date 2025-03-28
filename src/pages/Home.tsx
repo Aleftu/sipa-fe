@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import React, { useState, useEffect } from 'react';
 import Navbar from '../Components/Ui/Navbar';
 import Footer from '../Components/Ui/Footer';
