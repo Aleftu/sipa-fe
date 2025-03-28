@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from '../src/Pages/Home';
 import LearnMore from '../src/Pages/About';
 import Login from '../src/Pages/Login'
-import ForgotPassword from './pages/LupaPassword';
+import ForgotPassword from '../src/Pages/LupaPassword';
 import Register from '../src/Pages/Registrasi';
 import StatusPengaduan from '../src/Pages/StatusPengaduan'
 import TeamPage from '../src/Pages/TimCapstone'
