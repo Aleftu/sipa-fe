@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaHeart } from 'react-icons/fa';
-import { MdLocationOn, MdPhone, MdEmail } from 'react-icons/md';
+import { MdLocationOn, MdPhone } from 'react-icons/md';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();

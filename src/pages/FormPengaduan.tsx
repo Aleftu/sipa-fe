@@ -1,20 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch, FaUser } from 'react-icons/fa';
 import axios from 'axios';
 import Button from '../Components/Ui/Button';
 import Navbar from '../Components/Ui/Navbar';
 import Footer from '../Components/Ui/Footer';
 
+// Define an interface for the response data
+interface ResponseData {
+  pengaduan?: {
+    kode?: string;
+  };
+  kode?: string;
+}
+
 const FormPengaduan: React.FC = () => {
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [responseData, setResponseData] = useState<any>(null);
+  const [responseData, setResponseData] = useState<ResponseData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   
   // Function to get current date formatted in Indonesian
@@ -83,7 +90,7 @@ const FormPengaduan: React.FC = () => {
       // Create a new Date object and convert to specific format
       const currentDate = new Date().toISOString().split('T')[0];
       
-      const response = await axios.post(
+      const response = await axios.post<{ pengaduan: ResponseData }>(
         'https://api-sipa-capstone-production.up.railway.app/pengaduan',
         {
           lokasi: formData.lokasi,
@@ -110,21 +117,23 @@ const FormPengaduan: React.FC = () => {
       } else {
         throw new Error('Invalid response format from server');
       }
-    } catch (error: any) {
+    } catch (error) {
       let message = 'Terjadi kesalahan saat mengirim pengaduan. Silakan coba lagi.';
       
-      if (error.response) {
-        console.log('Error data:', error.response.data);
-        console.log('Error status:', error.response.status);
-        
-        if (error.response.data && error.response.data.message) {
-          message = `Error: ${error.response.data.message}`;
-        } else if (error.response.status === 500) {
-          message = 'Server mengalami masalah. Silakan coba lagi nanti.';
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.log('Error data:', error.response.data);
+          console.log('Error status:', error.response.status);
+          
+          if (error.response.data && (error.response.data as { message?: string }).message) {
+            message = `Error: ${(error.response.data as { message: string }).message}`;
+          } else if (error.response.status === 500) {
+            message = 'Server mengalami masalah. Silakan coba lagi nanti.';
+          }
+        } else if (error.request) {
+          message = 'Tidak ada respons dari server. Periksa koneksi internet Anda.';
         }
-      } else if (error.request) {
-        message = 'Tidak ada respons dari server. Periksa koneksi internet Anda.';
-      } else {
+      } else if (error instanceof Error) {
         message = `Error: ${error.message}`;
       }
       

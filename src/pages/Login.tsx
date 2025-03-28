@@ -5,6 +5,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '../Components/Ui/Button';
 import Loading from '../Components/Ui/Loading';
 
+// Add User interface definition
+interface User {
+  email: string;
+  role: 'admin' | 'user';
+  token: string;
+}
+
 interface LoginResponse {
   user?: User;
   token?: string;
@@ -18,7 +25,7 @@ const Login: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  // Remove the unused 'user' state
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -37,7 +44,7 @@ const Login: React.FC = () => {
   
       const data = response.data;
       
-      // Ensure data.user and data.token exist before setting
+      // Ensure data.user and data.token exist before processing
       if (data.user && data.token) {
         const userData: User = {
           email: data.user.email || email,
@@ -45,8 +52,6 @@ const Login: React.FC = () => {
           token: data.token
         };
 
-        setUser(userData);
-        
         // Store user data in localStorage
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", userData.role);
@@ -89,6 +94,7 @@ const Login: React.FC = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0E7FF] via-[#EAD6FF] to-[#F5EBFF] flex items-center justify-center px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden">

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPaperPlane, FaTimes, FaExclamationTriangle, FaRegSmile, FaUserShield } from 'react-icons/fa';
 import Button from '../Components/Ui/Button';
@@ -20,6 +21,8 @@ const PelayananPage: React.FC = () => {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLoginWarning, setShowLoginWarning] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
 
   // Chat states
   const [messages, setMessages] = useState<{text: string, sender: 'user' | 'bot', timestamp: Date}[]>([]);
@@ -42,6 +45,7 @@ const PelayananPage: React.FC = () => {
     
     if (token && role) {
       setIsAuthenticated(true);
+      setUserRole(role);
     } else {
       setShowLoginWarning(true);
     }
@@ -69,12 +73,20 @@ const PelayananPage: React.FC = () => {
 
   // Start the chat with initial message
   const startChat = () => {
-    setChatStarted(true);
-    setMessages([{
-      text: "Selamat datang di Layanan Bantuan SIPA. Kami siap membantu Anda dengan masalah kekerasan terhadap ibu dan anak. Semua percakapan bersifat rahasia dan aman. Bagaimana kami dapat membantu Anda hari ini?",
-      sender: 'bot',
-      timestamp: new Date()
-    }]);
+    // Optional: Add role-based logic
+    if (isAuthenticated) {
+      setChatStarted(true);
+      setMessages([{
+        text: userRole === 'admin' 
+          ? "Selamat datang, Admin SIPA. Anda dapat melihat detail lebih lanjut." 
+          : "Selamat datang di Layanan Bantuan SIPA. Kami siap membantu Anda dengan masalah kekerasan terhadap ibu dan anak. Semua percakapan bersifat rahasia dan aman. Bagaimana kami dapat membantu Anda hari ini?",
+        sender: 'bot',
+        timestamp: new Date()
+      }]);
+    } else {
+      // Optional fallback or additional logic
+      setShowLoginWarning(true);
+    }
   };
 
   // Check for profanity in message

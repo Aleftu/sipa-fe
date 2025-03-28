@@ -24,7 +24,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onMenuClick }) => {
         {[
           { key: "laporan", label: "Laporan Korban" },
           { key: "tingkat", label: "Laporan Tingkat Kekerasan" },
-         
         ].map((item) => (
           <li key={item.key}>
             <button

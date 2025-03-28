@@ -40,6 +40,7 @@ const StatusPengaduan: React.FC = () => {
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [statusData, setStatusData] = useState<StatusPengaduanData | null>(null);
   const [error, setError] = useState('');
+  
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -58,7 +59,11 @@ const StatusPengaduan: React.FC = () => {
       
       setStatusData(response.data);
       setSearchPerformed(true);
-    } catch (err) {
+    } catch (error) {
+      // Log the error to the console
+      console.error('Error fetching pengaduan status:', error);
+      
+      // Set a generic error message
       setError('Nomor pengaduan tidak ditemukan. Silahkan periksa kembali nomor yang Anda masukkan.');
       setStatusData(null);
     } finally {

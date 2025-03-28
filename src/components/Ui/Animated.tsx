@@ -47,7 +47,8 @@ const AnimatedCursor: React.FC = () => {
         target.tagName.toLowerCase() === 'textarea' ||
         target.tagName.toLowerCase() === 'select';
       
-      setIsHovering(isInteractive);
+      // Explicitly set to boolean
+      setIsHovering(!!isInteractive);
     };
     
     const handleMouseDown = () => setIsClicking(true);

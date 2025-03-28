@@ -35,6 +35,13 @@ const LaporanKorban: React.FC = () => {
     const [keterangan, setKeterangan] = useState('');
     const [modalStatus, setModalStatus] = useState<'success' | 'error' | null>(null);
     const [errorMessage, setErrorMessage] = useState('');
+    const [activeMenu, setActiveMenu] = useState<string>("laporan");
+
+    // Handle menu click from Sidebar
+    const handleMenuClick = (menu: string) => {
+        setActiveMenu(menu);
+        // Add any additional logic for menu changes if needed
+    };
 
     // Improved status mapping with more descriptive keterangan
     const STATUS_DESCRIPTIONS = {
@@ -303,54 +310,68 @@ const LaporanKorban: React.FC = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-50">
-            <Sidebar />
+            <Sidebar onMenuClick={handleMenuClick} />
             
             <div className="flex-1 p-4 md:p-8 lg:p-12 overflow-auto w-full">
-                <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
-                    <h2 className="text-2xl font-semibold text-gray-700 mb-4">Laporan Korban</h2>
-                    
-                    <div className="overflow-x-auto">
-                        <table className="w-full bg-white border rounded-lg">
-                            <thead className="bg-purple-100 text-gray-700">
-                                <tr>
-                                    <th className="py-3 px-4 text-left">Kode</th>
-                                    <th className="py-3 px-4 text-left">Tanggal</th>
-                                    <th className="py-3 px-4 text-left">Lokasi</th>
-                                    <th className="py-3 px-4 text-left">Status</th>
-                                    <th className="py-3 px-4 text-left">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {pengaduanList.map((pengaduan) => (
-                                    <tr key={pengaduan.id} className="border-b hover:bg-gray-50">
-                                        <td className="py-3 px-4">{pengaduan.kode}</td>
-                                        <td className="py-3 px-4">{new Date(pengaduan.tanggal).toLocaleDateString()}</td>
-                                        <td className="py-3 px-4">{pengaduan.lokasi}</td>
-                                        <td className="py-3 px-4">
-                                            {renderStatusBadge(pengaduan.status_pengaduan.status)}
-                                        </td>
-                                        <td className="py-3 px-4 flex space-x-2">
-                                            <button 
-                                                onClick={() => setDetailPengaduan(pengaduan)}
-                                                className="bg-indigo-500 text-white p-2 rounded-lg hover:bg-indigo-600 transition flex items-center"
-                                                title="Lihat Detail"
-                                            >
-                                                <Eye size={16} />
-                                            </button>
-                                            <button 
-                                                onClick={() => setSelectedPengaduan(pengaduan)}
-                                                className="bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600 transition flex items-center"
-                                                title="Ubah Status"
-                                            >
-                                                <Edit2 size={16} />
-                                            </button>
-                                        </td>
+                {activeMenu === "laporan" && (
+                    <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
+                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">Laporan Korban</h2>
+                        
+                        <div className="overflow-x-auto">
+                            <table className="w-full bg-white border rounded-lg">
+                                <thead className="bg-purple-100 text-gray-700">
+                                    <tr>
+                                        <th className="py-3 px-4 text-left">Kode</th>
+                                        <th className="py-3 px-4 text-left">Tanggal</th>
+                                        <th className="py-3 px-4 text-left">Lokasi</th>
+                                        <th className="py-3 px-4 text-left">Status</th>
+                                        <th className="py-3 px-4 text-left">Aksi</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {pengaduanList.map((pengaduan) => (
+                                        <tr key={pengaduan.id} className="border-b hover:bg-gray-50">
+                                            <td className="py-3 px-4">{pengaduan.kode}</td>
+                                            <td className="py-3 px-4">{new Date(pengaduan.tanggal).toLocaleDateString()}</td>
+                                            <td className="py-3 px-4">{pengaduan.lokasi}</td>
+                                            <td className="py-3 px-4">
+                                                {renderStatusBadge(pengaduan.status_pengaduan.status)}
+                                            </td>
+                                            <td className="py-3 px-4 flex space-x-2">
+                                                <button 
+                                                    onClick={() => setDetailPengaduan(pengaduan)}
+                                                    className="bg-indigo-500 text-white p-2 rounded-lg hover:bg-indigo-600 transition flex items-center"
+                                                    title="Lihat Detail"
+                                                >
+                                                    <Eye size={16} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => setSelectedPengaduan(pengaduan)}
+                                                    className="bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600 transition flex items-center"
+                                                    title="Ubah Status"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {activeMenu === "tingkat" && (
+                    <div className="bg-white p-6 rounded-xl shadow-lg">
+                        <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+                            Laporan Tingkat Kekerasan
+                        </h2>
+                        <p className="text-gray-600">
+                            Konten laporan tingkat kekerasan akan ditampilkan di sini.
+                        </p>
+                    </div>
+                )}
+
                 {/* Modals remain the same */}
                 {selectedPengaduan && renderStatusUpdateModal()}
                 {detailPengaduan && renderDetailModal()}
