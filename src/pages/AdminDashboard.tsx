@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Sidebar from "../Components/Ui/D.Admin";
+import Sidebar from "../components/Ui/SideBar";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import axios from 'axios';
 

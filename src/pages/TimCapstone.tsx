@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { FaGithub, FaLinkedin, FaEnvelope, FaBrain, FaCode, FaServer, FaStar, FaInstagram, FaTimes } from 'react-icons/fa';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
-import BackToTop from '../Components/Ui/BackToTop';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
+import BackToTop from '../components/Ui/BackToTop';
 import { motion } from 'framer-motion';
-import TeamNotification from '../Components/Ui/TeamNotification';
+import TeamNotification from '../components/Ui/TeamNotification';
 
 interface TeamMemberProps {
   name: string;

@@ -10,9 +10,9 @@ import {
   FaMapMarkerAlt,
   FaChevronDown 
 } from 'react-icons/fa';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
-import Button from '../Components/Ui/Button';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
+import Button from '../components/Ui/Button';
 
 const FAQItem: React.FC<{ 
   question: string; 

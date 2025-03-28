@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Sidebar from "../Ui/D.Admin";
+import Sidebar from "./SideBar";
 import { CheckCircle, XCircle } from 'lucide-react';
 
 interface TingkatKekerasan {

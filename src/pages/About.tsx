@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
-import BackToTop from '../Components/Ui/BackToTop';
-import Button from '../Components/Ui/Button';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
+import BackToTop from '../components/Ui/BackToTop';
+import Button from '../components/Ui/Button';
 
 const LearnMore: React.FC = () => {
   // Animation variants

@@ -1,9 +1,9 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPaperPlane, FaTimes, FaExclamationTriangle, FaRegSmile, FaUserShield } from 'react-icons/fa';
-import Button from '../Components/Ui/Button';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
+import Button from '../components/Ui/Button';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
 
 // Commonly used phrases for the chatbot
 const suggestedPhrases = [

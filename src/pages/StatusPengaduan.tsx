@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import Button from '../Components/Ui/Button';
+import Button from '../components/Ui/Button';
 import { 
   FaSearch, 
   FaExclamationCircle, 
@@ -15,8 +15,8 @@ import {
   FaCalendarCheck,
   FaInfoCircle
 } from 'react-icons/fa';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
 
 interface StatusPengaduanData {
   id: number;

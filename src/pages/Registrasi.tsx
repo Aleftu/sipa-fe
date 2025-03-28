@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../Components/Ui/Button';
+import Button from '../components/Ui/Button';
 
 const Register: React.FC = () => {
   const [nama, setNama] = useState('');

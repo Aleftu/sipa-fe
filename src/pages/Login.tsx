@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '../Components/Ui/Button';
-import Loading from '../Components/Ui/Loading';
+import Button from '../components/Ui/Button';
+import Loading from '../components/Ui/Loading';
 
 // Add User interface definition
 interface User {

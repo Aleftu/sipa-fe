@@ -1,22 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from './Pages/Home';
-import LearnMore from './Pages/About';
-import Login from './Pages/Login'
-import ForgotPassword from './Pages/LupaPassword';
-import Register from './Pages/Registrasi';
-import StatusPengaduan from './Pages/StatusPengaduan'
-import TeamPage from './Pages/TimCapstone'
-import FormPengaduan from './Pages/FormPengaduan'
-import Terms from './Components/Home/Terms'
-import Privacy from './Components/Home/Privacy'
-import AnimatedCursor from './Components/Ui/Animated';
-import ArticleListPage from './Components/Home/ArticlesListPage';
-import PelayananPage from './Pages/Pelayanan'
-import HalamanBantuan from './Pages/Bantuan'
-import Dashboard from './Pages/AdminDashboard'
-import LaporanKorban from './Components/Ui/LaporanKorban'
-import TingkatKekerasan from './Components/Ui/TingkatKekerasan';
+import LandingPage from './pages/Home';
+import LearnMore from './pages/About';
+import Login from './pages/Login'
+import ForgotPassword from './pages/LupaPassword';
+import Register from './pages/Registrasi';
+import StatusPengaduan from './pages/StatusPengaduan'
+import TeamPage from './pages/TimCapstone'
+import FormPengaduan from './pages/FormPengaduan'
+import Terms from './components/Home/Terms'
+import Privacy from './components/Home/Privacy'
+import AnimatedCursor from './components/Ui/Animated';
+import ArticleListPage from './components/Home/ArticlesListPage';
+import PelayananPage from './pages/Pelayanan'
+import HalamanBantuan from './pages/Bantuan'
+import Dashboard from './pages/AdminDashboard'
+import LaporanKorban from './components/Ui/LaporanKorban'
+import TingkatKekerasan from './components/Ui/TingkatKekerasan';
 
 const App: React.FC = () => {
   return (

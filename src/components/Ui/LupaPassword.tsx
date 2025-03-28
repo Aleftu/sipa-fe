@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import Button from '../Ui/Button';
-import Loading from '../Ui/Loading';
+import Button from './Button';
+import Loading from './Loading';
 
 // Define the response type
 interface ForgotPasswordResponse {

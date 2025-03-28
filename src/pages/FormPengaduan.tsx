@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FaMapMarkerAlt, FaFileAlt, FaCamera, FaCheck, FaCopy, FaHome, FaSearch, FaUser } from 'react-icons/fa';
 import axios from 'axios';
-import Button from '../Components/Ui/Button';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
+import Button from '../components/Ui/Button';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
 
 // Define an interface for the response data
 interface ResponseData {

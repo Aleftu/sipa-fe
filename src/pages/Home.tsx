@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../Components/Ui/Navbar';
-import Footer from '../Components/Ui/Footer';
-import Hero from '../Components/Home/HeroSection';
-import Features from '../Components/Home/FeaturesSection';
-import ArticlesPage from '../Components/Home/ArticlesSection';
-import Loading from '../Components/Ui/Loading';
-import BackToTop from '../Components/Ui/BackToTop';
+import Navbar from '../components/Ui/Navbar';
+import Footer from '../components/Ui/Footer';
+import Hero from '../components/Home/HeroSection';
+import Features from '../components/Home/FeaturesSection';
+import ArticlesPage from '../components/Home/ArticlesSection';
+import Loading from '../components/Ui/Loading';
+import BackToTop from '../components/Ui/BackToTop';
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
